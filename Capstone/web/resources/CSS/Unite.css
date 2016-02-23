@@ -1,0 +1,62 @@
+/**
+ *
+ * Author:      Patrick Bartholomew
+ * Date:        2/07/2016
+ * Description: CSS file for the Unite project
+ *
+ */
+
+/** body Style **/
+
+body {
+    background-image: url("../resources/img/bg.jpg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: 100% 100%;
+}
+
+h1 { 
+    color: #fefefe;
+    font-family: 'Helvetica Neue', sans-serif;
+    font-size: 75px;
+    font-weight: bold;
+    letter-spacing: -1px;
+    line-height: 1;
+    text-align: center;
+    opacity: 1;
+}
+
+h2 { color: #fefefe; 
+     font-family: 'Open Sans', sans-serif; 
+     font-size: 30px; 
+     font-weight: 300; 
+     line-height: 32px; 
+     margin: 0 0 72px; 
+     text-align: center;
+     opacity: 1;
+}
+/** Login Style **/
+
+.loginform {
+    margin: 0 auto;
+    width: 800px;
+    height: 1280px;
+    background-color: transparent;
+    opacity: 1;
+}
+
+.rmborder {
+    border: none;
+}
+
+.ui-outputlabel{
+    color: #fefefe;
+}
+
+.ui-outputlabel a{
+    color: #fefefe;
+}
+
+.ui-widget-content {
+    background-color: transparent;
+}
