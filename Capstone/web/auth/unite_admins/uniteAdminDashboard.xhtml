@@ -1,0 +1,124 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Master Administration Dashboard</title>
+
+        <link href="/Capstone/resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+
+        <style type="text/css">
+            .ui-panel, div.ui-state-hover {
+                margin: 10px;
+                width: 98%;
+                height: 400px;
+            }
+            .ui-dashboard-column {
+                margin: 0 6px;
+                width:48%;
+            }            
+            .ui-panel .ui-panel-content {  
+                padding: 0;
+            }
+            .ui-panelgrid .ui-panel-content {
+
+            }
+        </style>
+    </h:head>    
+
+    <!-- start menu -->
+
+    <h:body style="margin: 0;">
+        <h:form id="adminMenu">
+            <div>
+                <p:menubar>
+                    <p:menuitem  value=""></p:menuitem>
+                    <p:submenu label="#{adminLogin.user}'s Menu" icon="ui-icon-document" >                      
+                    </p:submenu>
+
+                    <f:facet name="options">
+                        <p:commandButton value="Logout" action="#{adminLogin.logout}" />
+                    </f:facet>
+                </p:menubar>
+            </div>
+
+            <div syle="width: 1200px; height: 900px;">
+
+                <div style="float: left; height: 700px;">
+                    <p:menu>
+
+                        <p:submenu label="Tickets">
+                            <p:menuitem value="Save"  icon="ui-icon-disk" />
+                            <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
+                        </p:submenu>
+
+                        <p:submenu label="Mail">
+                        </p:submenu>
+
+                        <p:submenu label="Tasks">
+                        </p:submenu>
+
+                        <p:submenu label="Notes">
+                        </p:submenu>
+
+                    </p:menu>
+                </div>
+
+                <div style="float: left; width:86%; height: 700px;">
+                    <p:growl id="msgs" showDetail="true" />
+
+                    <p:dashboard id="board" model="#{adminDashboard.model}">
+                        <p:ajax event="reorder" update="msgs" listener="#{adminDashboard.HandleReorder}" />
+
+                        <p:panel id="Tasks" header="My Tasks" closable="true" >
+                            <p:dataTable var="admin" value="#{taskBean.createTasksList(1)}" scrollable="true" scrollHeight="330" >
+                                
+                                <p:column headerText="Task Description">
+                                    <h:outputText value="#{admin.taskDesc}" />
+                                </p:column>
+
+                                <p:column headerText="Severity">
+                                    <h:outputText value="#{admin.severityLevel}" />
+                                </p:column>
+
+                                <p:column headerText="Created On">
+                                    <h:outputText value="#{admin.dateTimeCreated}" />
+                                </p:column>
+                                
+                                <p:column headerText="Work Item">
+                                    <p:commandButton value="Work This"></p:commandButton>
+                                </p:column>
+
+                            </p:dataTable>
+                        </p:panel>
+
+                        <p:panel id="Tickets" header="My Support Tickets" closable="true">
+                            <p:toolbar>
+                                <f:facet name="left">
+                                    <p:commandButton type="button" value="New" icon="ui-icon-document" />
+
+                                    <p:commandButton type="button" value="Open" icon="ui-icon-folder-open" />
+
+                                    <span class="ui-separator">
+                                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                                    </span>
+
+                                    <p:commandButton type="button" title="Save" icon="ui-icon-disk" />
+                                    <p:commandButton type="button" title="Delete" icon="ui-icon-trash" />
+                                    <p:commandButton type="button" title="Print" icon="ui-icon-print" />
+                                </f:facet>
+                            </p:toolbar>
+                        </p:panel>
+
+                    </p:dashboard>
+                </div>
+            </div>
+
+        </h:form>
+
+    </h:body>
+</html>

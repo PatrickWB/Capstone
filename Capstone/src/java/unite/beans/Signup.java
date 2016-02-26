@@ -18,11 +18,11 @@ import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
 import javax.validation.constraints.*;
 import javax.faces.bean.ManagedBean;
-import javax.faces.bean.ViewScoped;
+import javax.faces.bean.SessionScoped;
 import unite.beans.SignupDAO;
 
 @ManagedBean
-@ViewScoped
+@SessionScoped
 public class Signup {
 
     // user input variables
@@ -135,12 +135,15 @@ public class Signup {
 
     // get data from signup page.
     public String setupNewVolunteer() {
+        FacesContext context = FacesContext.getCurrentInstance();
         boolean pwvalid = checkPW();
         boolean valid = SignupDAO.CreateUser(firstname, lastname, password, email, phone, address, city, state, zip);
 
         if (pwvalid) {
 
-            if (valid) {
+            if (valid) {                
+                // let user know their account was created.                
+                context.addMessage(null, new FacesMessage("Account Created", "You can now log in from the Login page"));                
                 return "success";
             } else {
                 // don't redirect.  show the user an error message.

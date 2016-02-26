@@ -70,6 +70,7 @@ public class Login implements Serializable {
         if (valid) {
             HttpSession session = SessionState.getSession();
             session.setAttribute("username", user);
+            session.setAttribute("authenticated", "true");
             session.setMaxInactiveInterval(1800);
             System.out.println("login success");
             return "/auth/volunteers/userDashboard.xhtml?faces-redirect=true";

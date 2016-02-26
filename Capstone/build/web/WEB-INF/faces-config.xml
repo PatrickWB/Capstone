@@ -47,8 +47,15 @@
                     <from-action>#{signup.Cancel}</from-action>
                     <from-outcome>cancel</from-outcome>
                     <to-view-id>index.xhtml</to-view-id>
-                </navigation-case> 
-          
+                </navigation-case>                
+                
+          <!-- signup navigaion rules -->
+        <from-view-id>/auth/unite_admins/uniteAdminDashboard.xhtml</from-view-id>
+        <navigation-case>
+                    <from-action>#{maDashboard.Deny}</from-action>
+                    <from-outcome>redirect</from-outcome>
+                    <to-view-id>/index.xhtml</to-view-id>
+                </navigation-case>
     </navigation-rule>  
     
     <!-- JSF security method -->
@@ -63,7 +70,6 @@
         <navigation-handler>
             
         </navigation-handler>
-    </application>
-      
+    </application>      
           
 </faces-config>

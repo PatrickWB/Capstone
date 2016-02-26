@@ -1,0 +1,82 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Master Administration Dashboard</title>
+        <link href="/Capstone/resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="/Capstone/resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
+    </h:head>    
+
+    <!-- start menu -->
+    <h:body style="margin: 0;">
+        <div>
+            <p:menubar>
+                <p:submenu label="#{admin.user}"></p:submenu>
+                <p:submenu label="Tickets" icon="ui-icon-document">
+                    <p:submenu label="New" icon="ui-icon-contact">
+                        <p:menuitem value="Project" url="#" />
+                        <p:menuitem value="Other" url="#" />
+                    </p:submenu>
+                    <p:menuitem value="Open" url="#" />
+                    <p:separator />
+                    <p:menuitem value="Quit" url="#" /> 
+                </p:submenu>
+
+                <f:facet name="options">
+                    <p:inputText style="margin-right:10px" placeholder="Search"/>
+                    <p:commandButton type="button" value="Logout" icon="ui-icon-extlink" action="#{adminDashboard.logout}" />
+                </f:facet>
+            </p:menubar>
+        </div>
+
+        <h:form id="adminMenu">
+            <div style="float:left;">
+                <p:menu>
+
+                    <p:submenu label="Tickets">
+                        <p:menuitem value="Save"  icon="ui-icon-disk" />
+                        <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
+                    </p:submenu>
+
+                    <p:submenu label="Mail">
+                    </p:submenu>
+
+                    <p:submenu label="Tasks">
+                    </p:submenu>
+
+                    <p:submenu label="Notes">
+                    </p:submenu>
+
+                </p:menu>
+            </div>
+        </h:form>
+
+        <h:form id="dash">
+            <div style="float: left; width: 800px; height: 600px; margin: 10px;">
+                <p:growl id="msgs" showDetail="true" />
+
+                <p:dashboard id="board" model="#{adminDashboard.model}">
+                    <p:ajax event="reorder" update="msgs" />
+
+                    <p:panel id="Tickets" header="Support Tickets">
+                        <h:outputText value="Tickets"></h:outputText>
+                    </p:panel>
+
+                    <p:panel id="Calls" header="Calls">
+                        <h:outputLabel value="Calls"></h:outputLabel>
+                    </p:panel>
+
+                    <p:panel id="Chat" header="Chat">
+                        <h:outputLabel value="Chat"></h:outputLabel>
+                    </p:panel>
+
+                </p:dashboard>
+            </div>
+        </h:form>
+
+    </h:body>
+</html>

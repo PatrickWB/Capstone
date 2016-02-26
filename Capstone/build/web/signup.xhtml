@@ -5,10 +5,16 @@
       xmlns:p="http://primefaces.org/ui">
     <h:head>
         <title>Unite Volunteering Sign Up</title>
+        <!-- call CSS pages -->  
+        <link href="resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
     </h:head>
     <h:body>
         <div class="ui-grid ui-grid-responsive">
             <h:form>
+
+                <p:growl id="growl" sticky="true" showDetail="true" />
+
                 <p:panel header="New Unite Volunteer Form">
                     <p:messages />
                     <p:panelGrid columns="4" >
@@ -43,7 +49,7 @@
                         <p:message for="phone" />
                         <h:outputText value="" />
 
-                        <h:outputLabel for="address" value="Address: " /> 
+                        <h:outputLabel for="address" value="Address: " />
                         <p:inputText id="address" value="#{signup.address}" />
                         <p:message for="address" />
                         <h:outputText value="" />
@@ -66,7 +72,7 @@
                 </p:panel>                  
                 <h:commandButton value="Create My Account" action="#{signup.setupNewVolunteer}"></h:commandButton>
                 <h:commandButton value="Cancel" action="#{signup.Cancel}"></h:commandButton>  
-            
+
             </h:form>
         </div>
     </h:body>
