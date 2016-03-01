@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:p="http://primefaces.org/ui"
@@ -18,89 +18,89 @@
                 height: 400px;
             }
             .ui-dashboard-column {
-                margin: 0 6px;
+                margin: 0;
                 width:48%;
             }            
             .ui-panel .ui-panel-content {  
                 padding: 0;
             }
+
             .ui-panelgrid .ui-panel-content {
 
             }
         </style>
+
+        <script>
+            // jquery here
+            var tempVal = $("adminTaskId").val();
+        </script>
     </h:head>    
 
     <!-- start menu -->
 
     <h:body style="margin: 0;">
-        <h:form id="adminMenu">
-            <div>
-                <p:menubar>
-                    <p:menuitem  value=""></p:menuitem>
-                    <p:submenu label="#{adminLogin.user}'s Menu" icon="ui-icon-document" >                      
-                    </p:submenu>
+        <p:layout fullPage="true">
 
-                    <f:facet name="options">
-                        <p:commandButton value="Logout" action="#{adminLogin.logout}" />
-                    </f:facet>
-                </p:menubar>
-            </div>
+            <p:layoutUnit position="north" resizable="false" collapsible="true" size="80">
+                <h:form id="adminMenu">
+                    <div>
+                        <p:menubar>
+                            <p:menuitem  value=""></p:menuitem>
+                            <p:submenu label="#{adminLogin.user}'s Dashboard" icon="ui-icon-document" >                    
+                            </p:submenu>
 
-            <div syle="width: 1200px; height: 900px;">
+                            <f:facet name="options">
+                                <p:commandButton value="Logout" action="#{adminDashboardBean.Logout}"  />
+                            </f:facet>
+                        </p:menubar>
+                    </div>    
+                </h:form>
+            </p:layoutUnit>
 
-                <div style="float: left; height: 700px;">
-                    <p:menu>
-
-                        <p:submenu label="Tickets">
-                            <p:menuitem value="Save"  icon="ui-icon-disk" />
-                            <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
-                        </p:submenu>
-
-                        <p:submenu label="Mail">
-                        </p:submenu>
-
-                        <p:submenu label="Tasks">
-                        </p:submenu>
-
-                        <p:submenu label="Notes">
-                        </p:submenu>
-
-                    </p:menu>
-                </div>
-
-                <div style="float: left; width:86%; height: 700px;">
+            <p:layoutUnit position="center" resizable="true">
+                <h:form id="adminTasks">
                     <p:growl id="msgs" showDetail="true" />
+                    <!-- Growl Messages -->
+                    <p:growl id="taskErrorGrowler" showDetail="true" severity="warn"/>
+                    <p:growl id="saveGrowler" showDetail="true" severity="info" />
 
-                    <p:dashboard id="board" model="#{adminDashboard.model}">
-                        <p:ajax event="reorder" update="msgs" listener="#{adminDashboard.HandleReorder}" />
+                    <p:dashboard id="board" model="#{adminDashboardBean.model}">
+                        <p:ajax event="reorder" update="msgs" listener="#{adminDashboardBean.HandleReorder}" />
 
                         <p:panel id="Tasks" header="My Tasks" closable="true" >
-                            <p:dataTable var="admin" value="#{taskBean.createTasksList(1)}" scrollable="true" scrollHeight="330" >
-                                
-                                <p:column headerText="Task Description">
+
+                            <p:dataTable var="admin" value="#{taskBean.taskList}" resizableColumns="true" scrollable="true" 
+                                         scrollHeight="330" lazy="true" draggableColumns="true" draggableRows="true"
+                                         rowHover="true">
+
+                                <p:column headerText="T_ID" sortBy="#{admin.adminTaskId}" visible="false">
+                                    <h:outputText value="#{admin.adminTaskId}" />
+                                </p:column>
+
+                                <p:column headerText="Task Description" sortBy="#{admin.taskDesc}">
                                     <h:outputText value="#{admin.taskDesc}" />
                                 </p:column>
 
-                                <p:column headerText="Severity">
+                                <p:column headerText="Severity" sortBy="#{admin.severityLevel}">
                                     <h:outputText value="#{admin.severityLevel}" />
                                 </p:column>
 
-                                <p:column headerText="Created On">
+                                <p:column headerText="Created On" sortBy="#{admin.dateTimeCreated}">
                                     <h:outputText value="#{admin.dateTimeCreated}" />
                                 </p:column>
-                                
-                                <p:column headerText="Work Item">
-                                    <p:commandButton value="Work This"></p:commandButton>
-                                </p:column>
 
+                                <p:column headerText="Work">
+                                    <p:commandButton update=":adminDialog:taskDetail" oncomplete="PF('taskDialog').show()" value="Work">
+                                        <f:setPropertyActionListener value="#{admin}" target="#{taskBean.selectedTask}" />
+                                    </p:commandButton>
+                                </p:column>
                             </p:dataTable>
                         </p:panel>
 
                         <p:panel id="Tickets" header="My Support Tickets" closable="true">
-                            <p:toolbar>
+                            <p:toolbar> 
                                 <f:facet name="left">
                                     <p:commandButton type="button" value="New" icon="ui-icon-document" />
-
                                     <p:commandButton type="button" value="Open" icon="ui-icon-folder-open" />
 
                                     <span class="ui-separator">
@@ -113,11 +113,114 @@
                                 </f:facet>
                             </p:toolbar>
                         </p:panel>
+                        
+                        <p:panel id="Notes" header="My Notes" closable="true">
+                            <p:message for="noteName" id="msgNoteName" />
+                            <p:message for="notesEditor" id="msgNoteEditor" />
+                            
+                            <p:outputLabel for="noteName" value="Note Name:" />
+                            <br />
+                            <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
+                                <f:validateLength minimum="4" />
+                                <p:ajax event="keyup" update="msgNoteName" />
+                            </p:inputText>                            
+                            <br /><br />
+                            <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true">
+                                <f:validateLength minimum="25" />                                
+                            </p:editor>
+                                
+                            <p:commandButton value="Save" action="#{adminNotes.saveNote}" update=""></p:commandButton>
+                            <p:commandButton type="button" value="Clear" onclick="PF('notesWidget').clear();"></p:commandButton>
+                        </p:panel>
 
                     </p:dashboard>
-                </div>
-            </div>
 
+                </h:form>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="east" resizable="true" size="250" collapsible="true">
+                <h:form id="adminSideMenu">
+                    <p:menu>
+                        <p:submenu label="Tickets">
+                            <p:menuitem value="Save"  icon="ui-icon-disk" />
+                            <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
+                        </p:submenu>
+
+                        <p:submenu label="Mail">
+                        </p:submenu>
+
+                        <p:submenu label="Tasks">
+                        </p:submenu>
+
+                        <p:submenu label="Notes">
+                            <p:menuitem value="New" icon="ui-icon-disk" onclick="PF('notesDialog').show()" />
+                        </p:submenu>
+                        
+                    </p:menu>
+                </h:form>                
+            </p:layoutUnit>
+
+        </p:layout>
+
+        <h:form id="adminDialog">
+            <p:dialog header="Task Info" widgetVar="taskDialog" modal="true" showEffect="fade" 
+                  hideEffect="fade" resizable="true">
+            <p:outputPanel id="taskDetail" style="text-align:center;">
+                <p:panelGrid  columns="2" rendered="#{not empty taskBean.selectedTask}" columnClasses="label,value">
+                    <f:facet name="header">
+                        Work Task
+                    </f:facet>
+
+                    <h:outputText value="Ticket Id:" />
+                    <h:outputText value="#{taskBean.selectedTask.adminTaskId}" id="adminTaskId" />
+
+                    <h:outputText value="Task Description:" />
+                    <h:outputText value="#{taskBean.selectedTask.taskDesc}" />
+
+                    <h:outputText value="Severity Level:" />
+                    <h:outputText value="#{taskBean.selectedTask.severityLevel}" />
+
+                    <h:outputText value="Created On:" />
+                    <h:outputText value="#{taskBean.selectedTask.dateTimeCreated}" />
+
+                    <h:outputText value="Resolution" />
+                    <p:inputTextarea rows="10" cols="50" id="resolution" value="#{taskServices.res}" ></p:inputTextarea>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton  value="Save" action="#{taskServices.closeTask}" update="adminTasks:saveGrowler" >
+                    <f:setPropertyActionListener target="#{taskServices.res}" value="#{taskServices.res}" />
+                    <f:setPropertyActionListener target="#{taskServices.a_t_id}" value="#{taskBean.selectedTask.adminTaskId}" />
+                </p:commandButton>
+                <p:commandButton  value="Cancel" onclick="PF('taskDialog').hide()"></p:commandButton>
+
+            </p:outputPanel>
+        </p:dialog>
+        </h:form>
+        
+        <h:form id="adminNotes">
+            <p:dialog header="Quick Notes" widgetVar="notesDialog" modal="true" showEffect="fade" 
+                  hideEffect="fade" resizable="true">
+            <p:outputPanel id="noteDetail" style="text-align:center;">
+                <p:panelGrid  columns="2" columnClasses="label,value">
+                    <f:facet name="header">
+                        New Note
+                    </f:facet>                   
+
+                    <h:outputText value="Note Name:" />
+                    <p:inputText id="noteName" value="#{adminNotes.noteName}"></p:inputText>
+                    
+                    <h:outputText value="notes" />
+                    <p:inputTextarea rows="10" cols="50" id="resolution" value="#{adminNotes.notes}" ></p:inputTextarea>
+
+                </p:panelGrid>
+                <br />
+                <p:commandButton  value="Save" action="#{adminNotes.saveNote}" update="adminTasks:saveGrowler" partialSubmit="true" process="noteName,resolution" >
+                </p:commandButton>
+                <p:commandButton  value="Cancel" onclick="PF('notesDialog').hide()"></p:commandButton>
+
+            </p:outputPanel>
+        </p:dialog>
         </h:form>
 
     </h:body>

@@ -7,55 +7,64 @@
     <!-- Navigations rules are configured to accept results from String methods, 
     depending on the results will be what page the user is sent to. -->  
     
+    <protected-views>
+        <url-pattern>/auth/*</url-pattern>
+    </protected-views>
+    
     <navigation-rule>
         
         <!-- index navigation rules -->
         <from-view-id>/index.xhtml</from-view-id>          
-            <navigation-case>
-                <from-action>#{login.CheckLogin}</from-action>
-                <from-outcome>success</from-outcome>                
-                <to-view-id>/auth/volunteers/userDashboard.xhtml</to-view-id>
-            </navigation-case> 
-            <navigation-case>
-                <from-action>#{login.CheckLogin}</from-action>
-                <from-outcome>failure</from-outcome>
-                <to-view-id>index.xhtml</to-view-id>
-            </navigation-case> 
-            <navigation-case>
-                <from-outcome>signup</from-outcome>
-                <to-view-id>signup.xhtml</to-view-id>
-            </navigation-case>    
+        <navigation-case>
+            <from-action>#{login.CheckLogin}</from-action>
+            <from-outcome>success</from-outcome>                
+            <to-view-id>/auth/volunteers/userDashboard.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-action>#{login.CheckLogin}</from-action>
+            <from-outcome>failure</from-outcome>
+            <to-view-id>index.xhtml</to-view-id>
+        </navigation-case> 
+        <navigation-case>
+            <from-outcome>signup</from-outcome>
+            <to-view-id>signup.xhtml</to-view-id>
+        </navigation-case>    
             
-            <!-- signup navigaion rules -->
+        <!-- signup navigaion rules -->
         <from-view-id>/signup.xhtml</from-view-id>
-                <navigation-case>
-                    <from-action>#{signup.setupNewVolunteer}</from-action>
-                    <from-outcome>success</from-outcome>
-                    <to-view-id>index.xhtml</to-view-id>
-                </navigation-case>
-                <navigation-case>
-                    <from-action>#{signup.setupNewVolunteer}</from-action>
-                    <from-outcome>failure</from-outcome>
-                    <to-view-id>signup.xhtml</to-view-id>
-                </navigation-case>                
-                <navigation-case>
-                    <from-action>#{signup.setupNewVolunteer}</from-action>
-                    <from-outcome>mismatch</from-outcome>
-                    <to-view-id>signup.xhtml</to-view-id>
-                </navigation-case>                 
-                <navigation-case>
-                    <from-action>#{signup.Cancel}</from-action>
-                    <from-outcome>cancel</from-outcome>
-                    <to-view-id>index.xhtml</to-view-id>
-                </navigation-case>                
+        <navigation-case>
+            <from-action>#{signup.setupNewVolunteer}</from-action>
+            <from-outcome>success</from-outcome>
+            <to-view-id>index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{signup.setupNewVolunteer}</from-action>
+            <from-outcome>failure</from-outcome>
+            <to-view-id>signup.xhtml</to-view-id>
+        </navigation-case>                
+        <navigation-case>
+            <from-action>#{signup.setupNewVolunteer}</from-action>
+            <from-outcome>mismatch</from-outcome>
+            <to-view-id>signup.xhtml</to-view-id>
+        </navigation-case>                 
+        <navigation-case>
+            <from-action>#{signup.Cancel}</from-action>
+            <from-outcome>cancel</from-outcome>
+            <to-view-id>index.xhtml</to-view-id>
+        </navigation-case>                
                 
-          <!-- signup navigaion rules -->
+        <!-- signup navigaion rules -->
         <from-view-id>/auth/unite_admins/uniteAdminDashboard.xhtml</from-view-id>
         <navigation-case>
-                    <from-action>#{maDashboard.Deny}</from-action>
-                    <from-outcome>redirect</from-outcome>
-                    <to-view-id>/index.xhtml</to-view-id>
-                </navigation-case>
+            <from-action>#{adminDashboardBean.Deny}</from-action>
+            <from-outcome>redirect</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
+        <navigation-case>
+            <from-action>#{adminDashboardBean.Logout}</from-action>
+            <from-outcome>logout</from-outcome>
+            <to-view-id>/index.xhtml</to-view-id>
+        </navigation-case>
     </navigation-rule>  
     
     <!-- JSF security method -->

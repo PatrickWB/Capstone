@@ -33,9 +33,9 @@ public class SessionState {
         return session.getAttribute("username").toString();
     }
 
-    public static String getAdminName() {
+    public static String getAdminID() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        return session.getAttribute("admin").toString();
+        return session.getAttribute("adminId").toString();
     }
 
     public static String getMasterAdmin() {

@@ -25,13 +25,17 @@
                         <p:outputLabel value="User ID:" id="userid"></p:outputLabel>                     
                         <br/> 
                         <p:message for="userid"></p:message>                        
-                        <p:inputText id="txtUserId" value="#{adminLogin.user}" required="true" label="UserId"></p:inputText>
+                        <p:inputText id="txtUserId" value="#{adminLogin.user}" required="true" label="UserId">
+                            <p:ajax update="userid" event="blur" />
+                        </p:inputText>
                     </div>
                     <div style="float: left; width:399px;">
                         <p:outputLabel value="Password:" id="password"></p:outputLabel>                    
                         <br/> 
                         <p:message for="password" id="msgPassword"></p:message>                        
-                        <p:password id="txtPassword" value="#{adminLogin.pwd}" required="true"></p:password>
+                        <p:password id="txtPassword" value="#{adminLogin.pwd}" required="true">
+                            <p:ajax update="password" event="blur" />
+                        </p:password>
                     </div>
                     <br /><br /><br />
                     <p:commandButton value="Log In" action="#{adminLogin.CheckLogin}" process="@this" validateClient="true" ajax="false"></p:commandButton>  

@@ -1,14 +1,6 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package secure.unite.entities;
 
-/**
- *
- * @author patrick
- */
 public class Task {
     
     private int adminTaskId;
@@ -101,8 +93,5 @@ public class Task {
     public void setResolved(boolean resolved) {
         this.resolved = resolved;
     }
-
-    
-
 
 }
