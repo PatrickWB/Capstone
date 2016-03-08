@@ -1,0 +1,67 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Unite Dashboard for #{login.user}</title>
+        <link href="/Capstone/resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="/Capstone/resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
+
+    </h:head>    
+
+    <h:body style="margin: 0;">
+        <div>
+            <p:menubar>
+                <p:submenu label="User: #{login.user} Settings" icon="ui-icon-document">
+                    <p:submenu label="Settings" icon="ui-icon-contact">
+                        <p:menuitem value="Project" url="#" />
+                    </p:submenu>
+                </p:submenu>
+                <f:facet name="Search">
+                    <p:inputText style="margin-right:10px" placeholder="Search"/>
+                    <p:commandButton value="Logout" icon="ui-icon-extlink" action="#{login.logout}" />
+                </f:facet>
+            </p:menubar>
+        </div>
+
+        <h:form>
+            <div style="float:left;">
+                <p:menu>
+                    <p:submenu label="Dashboard">
+                        <p:menuitem value="view"  icon="ui-icon-disk" />         
+                        <p:menuitem value="Delete"  ajax="false" icon="ui-icon-close"/>                
+                        <p:menuitem value="Groups"  icon="ui-icon-star"/>
+                        <p:menuitem value="Events"  icon="ui-icon-star"/>
+                        <p:menuitem value="Email"  icon="ui-icon-star"/>
+                    </p:submenu>
+                </p:menu>
+            </div>
+
+            <div style="float: left; width: 800px; height: 600px; margin: 10px;">
+                <p:growl id="msgs" showDetail="true" />
+
+                <p:dashboard id="board" model="#{adminDashboard.model}">
+                    <p:ajax event="reorder" update="msgs" />
+
+                    <p:panel id="Tickets" header="Email" style="margin: 5px;">
+                        <h:outputText value="Tickets"></h:outputText>
+                    </p:panel>
+
+                    <p:panel id="Calls" header="Forms" style="margin: 5px;">
+                        <h:outputLabel value="Calls"></h:outputLabel>
+                    </p:panel>
+
+                    <p:panel id="Chat" header="Chat" style="margin: 5px;">
+                        <h:outputLabel value="Chat"></h:outputLabel>
+                    </p:panel>
+
+                </p:dashboard>
+            </div>
+        </h:form>
+
+    </h:body>
+</html>
+
