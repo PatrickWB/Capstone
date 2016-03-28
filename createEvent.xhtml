@@ -1,0 +1,62 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Unite Volunteering Group Sign Up</title>
+    </h:head>
+    <h:body>
+        <div class="ui-grid ui-grid-responsive">
+            <h:form>
+                <p:panel header="Create a New Event">
+                    <p:messages />
+                    <p:panelGrid columns="2" >
+                        <h:outputLabel for="eventname" value="Event Name: " /> 
+                        <p:inputText id="eventname" value="#{event.eventname}"/>
+                        <p:message for="eventname" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="eventdesc" value="Event Description: " /> 
+                        <p:inputText id="eventdesc" value="#{event.eventdesc}"/>
+                        <p:message for="eventdesc" />
+                        <h:outputText value="" />
+
+                        <p:outputLabel for="eventdate" value="Select Event Date:" />
+                        <p:calendar id="eventdate" value="#{event.eventdate}" />
+                        
+                        <p:outputLabel for="eventstart" value="Start Time:" />
+                        <p:calendar id="eventstart" value="#{event.eventstart}" pattern="HH:mm" timeOnly="true"  />
+                        
+                        <p:outputLabel for="eventend" value="End Time:" />
+                        <p:calendar id="eventend" value="#{event.eventend}" pattern="HH:mm" timeOnly="true"  />
+                        
+                        <h:outputLabel for="addr" value="Address: " /> 
+                        <p:inputText id="addr" value="#{event.address}"/>
+                        <p:message for="addr" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="city" value="City: " /> 
+                        <p:inputText id="city" value="#{event.city}"/>
+                        <p:message for="city" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="state" value="State: " /> 
+                        <p:inputText id="state" value="#{event.state}"/>
+                        <p:message for="state" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="zip" value="Zip Code: " /> 
+                        <p:inputText id="zip" value="#{event.zip}"/>
+                        <p:message for="zip" />
+                        <h:outputText value="" />
+                        
+                    </p:panelGrid>
+                </p:panel>                  
+                <p:commandButton value="Create New Event" action="#{event.setupNewEvent}"></p:commandButton>
+                <h:commandButton value="Cancel" action="#{event.Cancel}" ></h:commandButton>              
+            </h:form>
+        </div>
+    </h:body>
+</html>

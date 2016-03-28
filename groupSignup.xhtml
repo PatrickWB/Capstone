@@ -1,0 +1,64 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <title>Unite Volunteering Group Sign Up</title>
+    </h:head>
+    <h:body>
+        <div class="ui-grid ui-grid-responsive">
+            <h:form>
+                <p:panel header="New Unite Volunteer Group Form">
+                    <p:messages />
+                    <p:panelGrid columns="2" >
+
+                        <h:outputLabel for="groupname" value="Group Name: " /> 
+                        <p:inputText id="groupname" value="#{groupSignup.groupname}"/>
+                        <p:message for="groupname" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="groupdesc" value="Group Description: " /> 
+                        <p:inputText id="groupdesc" value="#{groupSignup.groupdesc}"/>
+                        <p:message for="groupdesc" />
+                        <h:outputText value="" />
+                        
+                        <h:outputLabel for="groupcat" value="Group Category: " /> 
+                        <p:selectOneMenu id="grouptcat" value="#{groupSignup.groupcat}" style="width:125px">
+                           <f:selectItem itemLabel="Select One" itemValue="" />
+                           <f:selectItem itemLabel="Animals" itemValue="1" />
+                           <f:selectItem itemLabel="Medical" itemValue="2" />
+                           <f:selectItem itemLabel="Construction" itemValue="3" />
+                           <f:selectItem itemLabel="Education" itemValue="4" />
+                           <f:selectItem itemLabel="Relief Groups" itemValue="5" />
+                        </p:selectOneMenu>
+
+                        <h:outputLabel for="addr" value="Address: " /> 
+                        <p:inputText id="addr" value="#{groupSignup.address}"/>
+                        <p:message for="addr" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="city" value="City: " /> 
+                        <p:inputText id="city" value="#{groupSignup.city}"/>
+                        <p:message for="city" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="state" value="State: " /> 
+                        <p:inputText id="state" value="#{groupSignup.state}"/>
+                        <p:message for="state" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="zip" value="Zip Code: " /> 
+                        <p:inputText id="zip" value="#{groupSignup.zip}"/>
+                        <p:message for="zip" />
+                        <h:outputText value="" />
+                    </p:panelGrid>
+                </p:panel>                  
+                <p:commandButton value="Create My Group" action="#{groupSignup.setupNewGroup}"></p:commandButton>
+                <h:commandButton value="Cancel" action="#{groupSignup.Cancel}" ></h:commandButton>  
+            
+            </h:form>
+        </div>
+    </h:body>
+</html>
