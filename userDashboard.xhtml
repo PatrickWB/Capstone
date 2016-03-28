@@ -1,0 +1,274 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+
+<!DOCTYPE html>
+<html 
+    xmlns="http://www.w3.org/1999/xhtml"
+    xmlns:p="http://primefaces.org/ui"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core">
+
+    <h:head>
+        <script src="Resources/converse.min.js" type="text/javascript"></script>
+        <link href="Resources/converse.min.css" rel="stylesheet" type="text/css"/>
+        
+        <title>User Dashboard</title>
+    </h:head>    
+    <body>
+        <h:form>
+        <p:tabView>
+            <p:tab title="Dashboard">
+                <h:panelGrid columns="2" cellpadding="2">
+                    <p:panel>
+                     
+                        
+                    </p:panel>
+
+                    <h:form>       
+                        <p:panel id="groupp" header="Your Groups" style = "width: 60%"> 
+                            <p:dataTable id ="groups" var="u" value="#{groupbean.getGroupList()}" >
+                                <p:column id = "gId" headerText = "Group Id" style = "display: none"> 
+                                    <h:outputText value ="#{u.g_id}"/>
+                                </p:column>
+
+                                <p:column headerText = "Name">
+                                    <h:outputText value ="#{u.g_name}"/>
+                                </p:column>
+
+                                <p:column headerText = "Active" style = "display: none">
+                                    <h:outputText value ="#{u.g_active}"/>
+                                </p:column>
+
+                                <p:column headerText = "Description">
+                                    <h:outputText value ="#{u.g_description}"/>
+                                </p:column>
+
+                                <p:column headerText = "Address">
+                                    <h:outputText value ="#{u.g_address}"/>
+                                </p:column>
+                                <p:column headerText = "City">
+                                    <h:outputText value ="#{u.g_city}"/>
+                                </p:column>                         
+
+                                <p:column headerText = "State">
+                                    <h:outputText value ="#{u.g_state}"/>
+                                </p:column>
+
+                                <p:column headerText = "Zip">
+                                    <h:outputText value ="#{u.g_zip}"/>
+                                </p:column>
+
+                                <p:column headerText = "Category">
+                                    <h:outputText value ="#{u.g_category}"/>
+                                </p:column>    
+                                <p:column headerText = "Date Created">
+                                    <h:outputText value ="#{u.getCreatedDate()}"/>
+                                </p:column> 
+
+                            </p:dataTable>
+
+                        </p:panel>
+                        <br />
+                        <br />
+                    </h:form>
+                </h:panelGrid>
+
+                <h:form>
+                    <p:panel id="rewards" header="Unite Rewards" style = "width: 30%">    
+
+                        <h:outputText value="Level: #{levelbean.getUserLevel()}" />
+                    </p:panel>
+                </h:form>
+
+                <p:panel id="events" header="Upcoming Events" style = "width: 30%">    
+
+                </p:panel>
+
+
+                <h:panelGrid columns="2" cellpadding="5" style = "position: absolute; right: 0px;">
+                    <h:form>
+                        <p:outputLabel for="inline" />
+                        <p:calendar id="inline" value="#{calendarView.date1}" mode="inline" />
+                    </h:form>    
+                </h:panelGrid>
+
+            </p:tab>
+            <p:tab title = "Profile Summary">
+                <form>
+                    <h:form>
+                        <p:commandButton value = "Update Profile"/>
+                    </h:form>
+
+                    <br/>
+
+                    <h:panelGrid id ="profileSummary" style ="width: 50%">
+                        
+
+                        <p:dataList var = "u" value="#{profilebean.getUserInfo()}">
+                            
+                            <p:row>
+                            <h:outputText style = "display: none" value ="#{u.getuId()}"/>
+                            </p:row>
+                            
+                            <p:row>
+                            <h:outputText value ="User ID: #{u.getuEmail()}"/> 
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="First Name: #{u.getuFirst()}"/> 
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Last Name: #{u.getuLast()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Phone: #{u.getuPhone()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Address: #{u.getuAddress()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="State: #{u.getuState()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Zip: #{u.getuZip()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Admin?: #{u.getuAdmin()}" style = "display: none"/>
+                            </p:row>
+                            
+                            <p:row>
+                            <h:outputText value ="Group Name: #{u.getuGname()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Create Date: #{u.getuCdate()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Reward Points: #{u.getuRpoints()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Reward Level: #{u.getuRlevel()}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Disabled: #{u.getuDisabled()}" style = "display: none"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Group Id: #{u.getuGid()}" style = "display: none"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="First Time: #{u.getuFirstTime()}" style = "display: none"/>
+                            </p:row>
+                           <br/>
+                            <table>
+                                <tr>
+                                    <td>
+                                        Email :
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuEmail()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        First Name: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuFirst()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Last Name:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuLast()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Phone Number:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuPhone()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Address: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuAddress()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        State: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuState()}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Zip:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{u.getuZip()}"/>
+                                    </td>
+                                </tr>
+                                <br/>
+
+                            </table>
+
+
+
+                        </p:dataList>
+
+                    </h:panelGrid>
+                </form>
+            </p:tab>
+            <p:tab title = "Messages">
+
+            </p:tab>
+        </p:tabView>
+        </h:form>
+    </body>
+    <script>  
+    require(['converse'], function (converse) {  
+       converse.initialize({  
+            bosh_service_url: 'http://uaf132602.ddns.uark.edu:7070/http-bind/',   
+            i18n: locales['en'],
+            keepalive: true,  
+            message_carbons: true,  
+            play_sounds: true,  
+            roster_groups: true,  
+            show_controlbox_by_default: true,  
+            xhr_user_search: false,  
+  allow_muc: false,  
+  auto_reconnect: true,  
+  allow_registration: false,  
+  debug: false,  
+  use_otr_by_default: true,  
+  visible_toolbar_buttons:   
+  {  
+  call: false,  
+  clear: true,  
+  emoticons: true,  
+  toggle_participants: false   
+  }  
+  
+        });  
+    });  
+</script>
+</html>
+
