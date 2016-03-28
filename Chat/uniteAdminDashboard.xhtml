@@ -1,0 +1,304 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
+
+    <h:head>
+        <title>Master Administration Dashboard</title>
+        <link href="../../resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="../../resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>      
+
+        <style type="text/css">
+            .ui-panel, div.ui-state-hover {
+                margin: 10px;
+                width: 98%;
+                height: 400px;
+            }
+            .ui-dashboard-column {
+                margin: 0;
+                width:48%;
+            }            
+            .ui-panel .ui-panel-content {  
+                padding: 0;
+            }
+
+            .ui-panelgrid .ui-panel-content {
+
+            }
+        </style>
+        
+        <script type="text/javascript">
+            function clearNoteFields(){
+                PF('notesWidget').clear();
+                $('noteName').val('');                
+            }
+            
+            function handleMessage(message) {
+                var chatContent = $(PrimeFaces.escapeClientId('chatForm:publicChat')),
+                        text = message.text;
+
+                chatContent.append(text + '<br />');
+
+                //keep scroll
+                chatContent.scrollTop(chatContent.height());
+
+                if (message.updateList) {
+                    updateList();
+                }
+            }
+        </script>
+
+    </h:head>    
+
+    <!-- start menu -->
+
+    <h:body style="margin: 0;">
+        <p:layout fullPage="true">
+
+            <p:layoutUnit position="north" resizable="false" collapsible="true" size="80">
+                <h:form id="adminMenu">
+                    <div>
+                        <p:menubar>
+                            <p:menuitem  value=""></p:menuitem>
+                            <p:submenu label="#{adminLogin.user}'s Dashboard" icon="ui-icon-document" >                    
+                            </p:submenu>
+
+                            <f:facet name="options">
+                                <p:commandButton value="Logout" action="#{adminDashboardBean.Logout}"  />
+                            </f:facet>
+                        </p:menubar>
+                    </div>    
+                </h:form>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" resizable="true">
+
+                <h:form id="adminForms">
+
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:growl id="taskErrorGrowler" showDetail="true" severity="warn"/>
+                    <p:growl id="saveGrowler" showDetail="true" severity="info" />
+
+                    <p:dashboard id="board" model="#{adminDashboardBean.model}">
+                        <p:ajax event="reorder" update="msgs" listener="#{adminDashboardBean.HandleReorder}" />
+
+                        <!-- tasks -->
+                        <p:panel id="Tasks" header="My Tasks" closable="true" >
+
+                            <p:dataTable var="admin" value="#{taskBean.taskList}"  resizableColumns="true" scrollable="true"  
+                                         scrollHeight="330" lazy="true" draggableColumns="true" draggableRows="true"
+                                         rowHover="true">                                
+
+                                <p:column headerText="T_ID" sortBy="#{admin.adminTaskId}" visible="false">
+                                    <h:outputText value="#{admin.adminTaskId}" />
+                                </p:column>
+
+                                <p:column headerText="Task Description" sortBy="#{admin.taskDesc}">
+                                    <h:outputText value="#{admin.taskDesc}" />
+                                </p:column>
+
+                                <p:column headerText="Severity" sortBy="#{admin.severityLevel}">
+                                    <h:outputText value="#{admin.severityLevel}" />
+                                </p:column>
+
+                                <p:column headerText="Created On" sortBy="#{admin.dateTimeCreated}">
+                                    <h:outputText value="#{admin.dateTimeCreated}" />
+                                </p:column>
+
+                                <p:column headerText="Work">
+                                    <p:commandButton update=":adminDialog:taskDetail" oncomplete="PF('taskDialog').show()" value="Work this Task">
+                                        <f:setPropertyActionListener value="#{admin}" target="#{taskBean.selectedTask}" />
+                                    </p:commandButton>
+                                </p:column>
+                            </p:dataTable>
+                        </p:panel>
+
+                        <!-- tickets -->
+                        <p:panel id="Tickets" header="My Support Tickets" closable="true">
+                            <p:toolbar> 
+                                <f:facet name="left">
+                                    <p:commandButton type="button" value="New" icon="ui-icon-document" />
+                                    <p:commandButton type="button" value="Open" icon="ui-icon-folder-open" />
+
+                                    <span class="ui-separator">
+                                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
+                                    </span>
+
+                                    <p:commandButton type="button" title="Save" icon="ui-icon-disk" />
+                                    <p:commandButton type="button" title="Delete" icon="ui-icon-trash" />
+                                    <p:commandButton type="button" title="Print" icon="ui-icon-print" />
+                                </f:facet>
+                            </p:toolbar>
+                        </p:panel>
+
+                        <!-- notes -->
+                        <p:panel id="Notes" header="New Note" closable="true">
+                            <p:message for="noteName" id="msgNoteName" />
+                            <p:message for="notesEditor" id="msgNoteEditor" />
+
+                            <p:outputLabel for="noteName" value="Note Name:" />
+                            <br />
+                            <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
+                                <f:validateLength minimum="4" />
+                                <p:ajax event="keyup" update="msgNoteName"  />
+                            </p:inputText>                            
+                            <br /><br />
+                            <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true">
+                                <f:validateLength minimum="25" />                                
+                            </p:editor>
+
+                            <p:commandButton value="Save" action="#{adminNotes.saveNote}" update=""></p:commandButton>
+                            <p:commandButton type="button" value="Clear" onclick="clearNoteFields()"></p:commandButton>
+                        </p:panel>
+
+                    </p:dashboard>
+
+                </h:form>
+
+            </p:layoutUnit>
+
+            <p:layoutUnit position="east" resizable="true" size="250" collapsible="true">
+                <h:form id="adminSideMenu">
+                    <p:menu>
+                        <p:submenu label="Tickets">
+                            <p:menuitem value="Save"  icon="ui-icon-disk" />
+                            <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
+                        </p:submenu>
+
+                        <p:submenu label="Mail">
+                        </p:submenu>
+
+                        <p:submenu label="Tasks">
+                        </p:submenu>
+
+                        <p:submenu label="Notes">
+                            <p:menuitem value="New" icon="ui-icon-disk" onclick="PF('notesDialog').show()" />
+                        </p:submenu>
+
+                    </p:menu>
+                </h:form>
+
+                <br />
+                <br />
+                <br />
+                <!-- chat -->
+                <h:form id="chatForm">
+
+                    <p:outputLabel>Chat</p:outputLabel>
+
+                    <br />
+                    <br />
+
+                    <p:commandButton value="Login" actionListener="#{chatView.login}" update="chatForm"
+                                     icon="ui-icon-person" disabled="false" rendered="#{not chatView.loggedIn}" />
+
+                    <!-- chat stuff -->
+                    <p:remoteCommand name="updateList" update="users" process="@this" />
+                    <p:dataList id="users" var="user" value="#{chatUsers.users}" styleClass="usersList" rendered="#{chatView.loggedIn}">
+
+                        <f:facet name="header">
+                            Users
+                        </f:facet>
+
+                        <p:commandButton title="Chat" icon="ui-icon-comment" oncomplete="PF('pChat').show()" >
+                            <f:setPropertyActionListener value="#{user}" target="#{chatView.privateUser}" />
+                        </p:commandButton>
+
+                        #{user.chatUserFirstName} #{user.chatUserLastName}
+
+                    </p:dataList>
+
+                    <div class="chat">
+                        <p:outputPanel id="publicChat" layout="block" styleClass="chatlogs" />
+                    </div>
+                    
+
+                    <p:separator />
+
+                    <p:inputText value="#{chatView.globalMessage}" styleClass="messageInput" rendered="#{chatView.loggedIn}" />
+                    <p:spacer width="5" />
+                    <p:commandButton value="Send" actionListener="#{chatView.sendGlobal}" oncomplete="$('.messageInput').val('').focus()" rendered="#{chatView.loggedIn}" />
+                    <p:spacer width="5" />
+                    <p:commandButton value="Disconnect" actionListener="#{chatView.disconnect}" global="false" update="chatForm" rendered="#{chatView.loggedIn}" />
+
+                </h:form>
+
+            </p:layoutUnit>
+
+        </p:layout>
+
+        <h:form id="adminDialog">
+            <p:dialog header="Task Info" widgetVar="taskDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true" dynamic="true">
+                
+                <p:outputPanel id="taskDetail" style="text-align:center;">
+                    
+                    <p:panelGrid  columns="2" rendered="#{not empty taskBean.selectedTask}" columnClasses="label,value">
+                        <f:facet name="header">
+                            Work Task
+                        </f:facet>
+
+                        <h:outputText value="Ticket Id:" />
+                        <h:outputText value="#{taskBean.selectedTask.adminTaskId}" id="adminTaskId" />
+
+                        <h:outputText value="Task Description:" />
+                        <h:outputText value="#{taskBean.selectedTask.taskDesc}" />
+
+                        <h:outputText value="Severity Level:" />
+                        <h:outputText value="#{taskBean.selectedTask.severityLevel}" />
+
+                        <h:outputText value="Created On:" />
+                        <h:outputText value="#{taskBean.selectedTask.dateTimeCreated}" />
+
+                        <h:outputText value="Resolution" />
+                        <p:inputTextarea rows="10" cols="50" id="resolution" value="#{taskServices.res}" ></p:inputTextarea>
+
+                    </p:panelGrid>
+                    
+                    <br />
+                    
+                    <p:commandButton  value="Save" action="#{taskServices.closeTask}" update="adminForms:saveGrowler" >
+                        <f:setPropertyActionListener target="#{taskServices.res}" value="#{taskServices.res}" />
+                        <f:setPropertyActionListener target="#{taskServices.a_t_id}" value="#{taskBean.selectedTask.adminTaskId}" />
+                    </p:commandButton>
+                    
+                    <p:commandButton  value="Cancel" onclick="PF('taskDialog').hide()"></p:commandButton>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="adminNotes">
+            <p:dialog header="Quick Notes" widgetVar="notesDialog" modal="true" showEffect="fade" 
+                      hideEffect="fade" resizable="true">
+                <p:outputPanel id="noteDetail" style="text-align:center;">
+                    <p:panelGrid  columns="2" columnClasses="label,value">
+                        <f:facet name="header">
+                            New Note
+                        </f:facet>                   
+
+                        <h:outputText value="Note Name:" />
+                        <p:inputText id="noteName" value="#{adminNotes.noteName}"></p:inputText>
+
+                        <h:outputText value="notes" />
+                        <p:inputTextarea rows="10" cols="50" id="resolution" value="#{adminNotes.notes}" ></p:inputTextarea>
+
+                    </p:panelGrid>
+                    <br />
+                    <p:commandButton  value="Save" action="#{adminNotes.saveNote}"  partialSubmit="true" process="noteName,resolution" >
+                    </p:commandButton>
+                    <p:commandButton  value="Cancel" onclick="PF('notesDialog').hide()"></p:commandButton>
+
+                </p:outputPanel>
+            </p:dialog>
+        </h:form>
+
+        <!-- chat socket,script -->
+        <p:socket onMessage="handleMessage" channel="/chat" autoConnect="false" widgetVar='subscriber' />
+
+    </h:body>
+
+
+</html>
