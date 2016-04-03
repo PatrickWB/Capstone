@@ -1,8 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
+<web-app version="3.0" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee              http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd">
     <context-param>
         <param-name>javax.faces.PROJECT_STAGE</param-name>
         <param-value>Development</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.CLIENT_SIDE_VALIDATION</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.FONT_AWESOME</param-name>
+        <param-value>true</param-value>
+    </context-param>
+    <context-param>
+        <param-name>primefaces.SUBMIT</param-name>
+        <param-value>partial</param-value>
+    </context-param>
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/applicationContext.xml</param-value>
+    </context-param>
+    <context-param>
+        <param-name>facelets.SKIP_COMMENTS</param-name>
+        <param-value>true</param-value>
     </context-param>
     <servlet>
         <servlet-name>Faces Servlet</servlet-name>
@@ -21,4 +41,71 @@
     <welcome-file-list>
         <welcome-file>faces/index.xhtml</welcome-file>
     </welcome-file-list>
+    <security-constraint>
+        <display-name>Volunteer</display-name>
+        <web-resource-collection>
+            <web-resource-name>volunteer access</web-resource-name>
+            <description>this is the only access volunteers get.</description>
+            <url-pattern>/auth/volunteers/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <description/>
+            <role-name>Volunteer</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <description/>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <login-config>
+        <auth-method>FORM</auth-method>
+        <form-login-config>
+            <form-login-page>/index.xhtml</form-login-page>
+            <form-error-page>/Error.xhtml</form-error-page>
+        </form-login-config>
+    </login-config>
+    <security-role>
+        <description>lowest level of security access.  Given to the Volunteers.</description>
+        <role-name>Volunteer</role-name>
+    </security-role>
+    <!-- Unite Admins security rules -->
+    <security-constraint>
+        <display-name>Unite Admins</display-name>
+        <web-resource-collection>
+            <web-resource-name>Unite Admin security access</web-resource-name>
+            <description>basic admin level stuff</description>
+            <url-pattern>/auth/unite_admins/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>uniteadmin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-role>
+        <description>Unite Admins will have the ability to access their personal tasks and
+            view information reported about a volunteer or trouble ticket pertaining to.
+        </description>
+        <role-name>UniteAdmin</role-name>
+    </security-role>
+    <!-- Master Admins security rules -->
+    <security-constraint>
+        <display-name>Unite Master Admins</display-name>
+        <web-resource-collection>
+            <web-resource-name>masteradmins</web-resource-name>
+            <description>top level admin access</description>
+            <url-pattern>/auth/master_admins/*</url-pattern>
+        </web-resource-collection>
+        <auth-constraint>
+            <role-name>masteradmin</role-name>
+        </auth-constraint>
+        <user-data-constraint>
+            <transport-guarantee>CONFIDENTIAL</transport-guarantee>
+        </user-data-constraint>
+    </security-constraint>
+    <security-role>
+        <description>This is the highest form of security for the site.</description>
+        <role-name>UniteMasterAdmin</role-name>
+    </security-role>
 </web-app>

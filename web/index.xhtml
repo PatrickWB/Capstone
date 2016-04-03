@@ -2,48 +2,68 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
-        <title>Unite Login</title>
+        <title>Unite Volunteer Login</title>
+        <!-- call CSS pages -->  
+        <link href="resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
     </h:head>
-       
-        <h:body rendered="#{!userstate.loggedIn}">  
-        <!-- end menu -->        
-        <div>   
-            <h1>Welcome To Unite!</h1>
-                    <p>Where volunteers come together to solve issues.</p>
-                    <br />
-                    
-            <h:form>
-                    <h3>Login Form</h3>
-                    
-                    <p:outputLabel value="User ID:" id="userid"></p:outputLabel>                     
-                    <br/> 
-                    <p:message for="userid"></p:message>                        
-                    <p:inputText id="txtUserId" value="#{login.user}"></p:inputText>
-                    <br />
-                    <br />
-                    <p:outputLabel value="Password:" id="password"></p:outputLabel>                    
-                    <br/> 
-                    <p:message for="password" id="msgPassword"></p:message>                        
-                    <p:password id="txtPassword" value="#{login.pwd}"></p:password>
-                    <br />
-                    <br />
-                    <h:commandButton value="Login" action="#{login.CheckLogin}"></h:commandButton>                    
-            </h:form>   
-            
+
+    <h:body class="bgimg">
+
+        <div class="titleHeader">                
+            <h1 class="title">W<span class="small">elcome to</span> UNITE!</h1>
+            <h2>Where volunteers can discover local organizations and get involved.</h2>
         </div>
-        
-        <div>
-            <h2>Are you interested in becoming a volunteer or starting an organization?</h2>
-            
-            <p:link outcome="signup" value="signup">Sign Up</p:link>
-            
-            
-            <h:outputText value=""></h:outputText>
+
+        <div class="loginform"> 
+
+            <div class="loginRibbon">
+
+                <div class="logoBox">
+                    <h1>Our Motto:</h1>
+                    <P>“How far you go in life depends on your being tender with the young, compassionate with the aged, sympathetic with the striving, 
+                        and tolerant of the weak and the strong. Because someday in life you will have been all of these."<br /> - George Washington Carver - </P>
+                </div>
+
+                <div class="loginCreds">
+                    <h:form id="loginForm" >
+                        <p:panel styleClass="rmborder">
+                            <p:messages />
+                            <div style="float: left; width:250px;">
+                                <p:outputLabel value="Your Email Address:" id="userid"></p:outputLabel>                     
+                                <br/> 
+                                <p:message for="userid"></p:message>                        
+                                <p:inputText id="txtUserId" value="#{login.user}" required="true" label="UserId" >
+                                    <p:ajax event="blur" update="userid" />
+                                </p:inputText>
+                            </div>
+                            <div style="float: left; width:250px;">
+                                <p:outputLabel value="Your Password:" id="password"></p:outputLabel>                    
+                                <br/> 
+                                <p:message for="password" id="msgPassword"></p:message>                        
+                                <p:password id="txtPassword" value="#{login.pwd}" required="true">
+                                    <p:ajax event="blur" update="password" />
+                                </p:password>
+                            </div>
+                            <br /><br /><br /><br />
+                            <p:commandButton value="Log In" action="#{login.CheckLogin}" process="@this" validateClient="true" ajax="false"></p:commandButton>
+                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                            <p:commandButton type="button" value="Clear" onclick=""></p:commandButton>
+                        </p:panel>                                      
+                    </h:form>
+                </div>
+
+
+            </div>
         </div>
-        
-        
+
+        <div class="loginFooter">
+            <h3>Are you interested in becoming a volunteer or starting an organization? <p:link outcome="signup" value="Sign Up" class="signup"></p:link></h3>                
+
+        </div>  
     </h:body>
 </html>
 
