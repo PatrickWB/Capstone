@@ -11,6 +11,7 @@
 
 package unite.DAO;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,13 +21,8 @@ import java.sql.SQLException;
 import unite.login.beans.DataConnect;
 import unite.login.beans.Login;
 
-// spring security imports
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import unite.spring.security.Authorities;
 
-public class LoginDAO implements UserDetailsService{
+public class LoginDAO implements Serializable{
     
     public static boolean validate(String user, String pw)
     {
@@ -80,8 +76,8 @@ public class LoginDAO implements UserDetailsService{
             ResultSet rs = ps.executeQuery();
                 if (rs.next())
                 {
-                    Authorities auth = new Authorities();
-                    auth.setAuthority("volunteer");
+//                    Authorities auth = new Authorities();
+//                    auth.setAuthority("volunteer");
                 }
         }
         catch(Exception ex)
@@ -96,12 +92,5 @@ public class LoginDAO implements UserDetailsService{
         // if the try catch block fails return a false result for validation
         return username;
     }
-    
-    @Override
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         
-                
-        return null;
-    }
-    
 }

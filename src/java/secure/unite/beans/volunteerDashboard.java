@@ -1,8 +1,5 @@
 /*
  *
- * Author:      Patrick Bartholomew
- * Date:        2/24/2016
- * Modified:    2/26/2016
  * Description: This bean is repsonsible for rendering the Administration Dashboard.
  *              All data for dashboard must be in separate beans.
  *
@@ -32,11 +29,9 @@ import javax.ejb.SessionContext;
 
 @ManagedBean
 @ViewScoped
-public class adminDashboardBean implements Serializable {
+public class volunteerDashboard implements Serializable {
 
     private DashboardModel model;
-
-    adminTaskListBean tasks = new adminTaskListBean();
 
     // @Post construct is ran before the page is rendered.
     @PostConstruct
@@ -49,12 +44,12 @@ public class adminDashboardBean implements Serializable {
         DashboardColumn column1 = new DefaultDashboardColumn();
         DashboardColumn column2 = new DefaultDashboardColumn();
 
-        column1.addWidget("Tasks");
-        column1.addWidget("Notes");
-        column2.addWidget("Chat");  
+        column1.addWidget("Summary");
+        column2.addWidget("Groups");
+        column2.addWidget("Rewards");
 
         model.addColumn(column1);
-        model.addColumn(column2);   
+        model.addColumn(column2);
     }
 
     public String Deny() {
@@ -93,7 +88,7 @@ public class adminDashboardBean implements Serializable {
         // session needs to be destroyed
         HttpSession session = SessionState.getSession();
         session.invalidate();
-        System.out.println("admin was logged out from dashboard");
+        System.out.println("user was logged out from dashboard");
         return "/index.xhtml?faces-redirect=true";
     }
 

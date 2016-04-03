@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 /**
  *
  * Author:      Patrick Bartholomew
@@ -20,6 +15,8 @@ import javax.faces.event.ActionEvent;
 import javax.validation.constraints.*;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ViewScoped;
+import javax.servlet.http.HttpSession;
+import secure.unite.beans.SessionState;
 import unite.DAO.SignupDAO;
 
 @ManagedBean(name="signup")
@@ -145,7 +142,7 @@ public class Signup implements Serializable{
             if (valid) {                
                 // let user know their account was created.                
                 context.addMessage(null, new FacesMessage("Account Created", "You can now log in from the Login page"));                
-                return "success";
+                return "/index.xhtml?faces-redirect=true";
             } else {
                 // don't redirect.  show the user an error message.
                 System.out.println("Passwords didn't match");
@@ -160,9 +157,9 @@ public class Signup implements Serializable{
         }
     }
 
-    public static String Cancel() {
-        System.out.println("cancel was clicked");
-        return "cancel";
+    public String Cancel() {
+        System.out.println("admin was logged out from dashboard");
+        return "/index.xhtml?faces-redirect=true";
     }
 
 }

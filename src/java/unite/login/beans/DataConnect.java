@@ -35,7 +35,7 @@ public class DataConnect {
             return null;            
         }
 
-        System.out.println("MySQL JDBC Driver Registered!");
+        //System.out.println("MySQL JDBC Driver Registered!");
         Connection con = null;
         
         try{
