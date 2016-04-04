@@ -224,6 +224,30 @@ body {
 *******************************************************************************/
 
 .chat{
-    height: 150px;
-    overflow-y: hidden;
+    height: 250px;
+    overflow-y: scroll;    
 }
+
+.chat .table{    
+    width: 100%;
+}
+
+table.table td.received {
+    display: none;
+}
+
+table.table td.user{
+    height: 33px;
+    background-color: #2DC7FF;
+    border: 1px solid #ffffff;
+    color: #ffffff;
+    width: 25%;
+    text-align: center;
+}
+
+table.table td.message{
+    min-height: 35px;
+    width: 70%;
+    text-align: left;
+}
+
