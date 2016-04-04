@@ -33,8 +33,8 @@
 
         <script>
             var wsocket;
-            var serviceLocation = "ws://localhost:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
-            //var serviceLocation = "ws://uaf132602.ddns.uark.edu:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            //var serviceLocation = "ws://localhost:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            var serviceLocation = "ws://uaf132602.ddns.uark.edu:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
             var $userName;
             var $message;
             var $chatWindow;
@@ -46,7 +46,7 @@
                 var $messageLine =
                         $(' <tr>\n\<td class="received"> ' + msg.received
                                 + ' </td><td class="user label label-info"> ' + msg.sender
-                                + ' </td><td class="message badge">' + msg.message
+                                + ': </td><td class="message badge">' + msg.message
                                 + ' </td></tr> ');
                 $chatWindow.append($messageLine);
             }
@@ -60,10 +60,15 @@
             function connectToChatserver() {
                 room = $('#chatroom option:selected').val();
                 wsocket = new WebSocket(serviceLocation + room);
+                wsocket.onopen = function () {
+                    var msg = '{"message":" os online", "sender":"' + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                };
                 wsocket.onmessage = onMessageReceived;
             }
 
             function leaveRoom() {
+                // let other users know this person left.
                 wsocket.close();
                 $chatWindow.empty();
                 $('.chat-wrapper').hide();
@@ -79,7 +84,7 @@
                 $('#enterRoom').click(function (evt) {
                     evt.preventDefault();
                     connectToChatserver();
-                    $('.chat-wrapper h2').text($userName + " is in " + room);
+                    $('.chat-wrapper h2').text($userName + " is in " + room + " channel");
                     $('.chat-signin').hide();
                     $('.chat-wrapper').show();
                     $message.focus();
@@ -90,7 +95,10 @@
                 });
 
                 $('#leave-room').click(function () {
-                    leaveRoom();
+                    var msg = '{"message":" is offline", "sender":"'
+                            + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                    setTimeout(leaveRoom,300);
                 });
             });
         </script>
@@ -166,8 +174,6 @@
 
                         <!-- tickets -->
                         <p:panel id="Chat" header="Chat Utility" closable="true">
-
-
                             <div class="container chat-signin">
                                 <form class="form-signin">
                                     <div class="btn-group">
@@ -184,32 +190,23 @@
                                     <button class="btn btn-large btn-primary" type="submit" id="enterRoom">Sign in</button>
                                 </form>
                             </div>
-
-
                             <!-- /container -->
-
                             <div class="container chat-wrapper">
                                 <form id="do-chat">
                                     <h2 class="alert alert-success"></h2>
-
                                     <!-- /chat window -->
-                                    <div>
+                                    <div class="chat">
                                         <table id="response" class="table table-bordered">
 
                                         </table>
                                     </div>
-
-
-                                    <fieldset>
-                                        <div class="controls">
-                                            <input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
-                                            <input type="submit" class="btn btn-large btn-block btn-primary" value="Send message" />
-                                            <button class="btn btn-large btn-block" type="button" id="leave-room">Leave room</button>
-                                        </div>
-                                    </fieldset>
+                                    <div class="controls">
+                                        <input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
+                                        <input type="submit" class="btn btn-large btn-block btn-primary" value="Send message" />
+                                        <button class="btn btn-large btn-block" type="button" id="leave-room">Leave room</button>
+                                    </div>
                                 </form>
                             </div>
-
                         </p:panel>
 
                         <!-- notes -->
