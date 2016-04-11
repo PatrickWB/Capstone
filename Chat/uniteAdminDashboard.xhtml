@@ -9,13 +9,13 @@
     <h:head>
         <title>Master Administration Dashboard</title>
         <link href="../../resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
-        <link href="../../resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>      
+        <link href="../../resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>    
 
         <style type="text/css">
             .ui-panel, div.ui-state-hover {
                 margin: 10px;
                 width: 98%;
-                height: 400px;
+                min-height: 250px;
             }
             .ui-dashboard-column {
                 margin: 0;
@@ -29,26 +29,78 @@
 
             }
         </style>
-        
-        <script type="text/javascript">
-            function clearNoteFields(){
-                PF('notesWidget').clear();
-                $('noteName').val('');                
+
+
+        <script>
+            var wsocket;
+            //var serviceLocation = "ws://localhost:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            var serviceLocation = "ws://uaf132602.ddns.uark.edu:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            var $userName;
+            var $message;
+            var $chatWindow;
+            var room = '';
+
+            function onMessageReceived(evt) {
+                //var msg = eval('(' + evt.data + ')');
+                var msg = JSON.parse(evt.data); // native API
+                var $messageLine =
+                        $(' <tr>\n\<td class="received"> ' + msg.received
+                                + ' </td><td class="user label label-info"> ' + msg.sender
+                                + ': </td><td class="message badge">' + msg.message
+                                + ' </td></tr> ');
+                $chatWindow.append($messageLine);
             }
-            
-            function handleMessage(message) {
-                var chatContent = $(PrimeFaces.escapeClientId('chatForm:publicChat')),
-                        text = message.text;
-
-                chatContent.append(text + '<br />');
-
-                //keep scroll
-                chatContent.scrollTop(chatContent.height());
-
-                if (message.updateList) {
-                    updateList();
-                }
+            function sendMessage() {
+                var msg = '{"message":"' + $message.val() + '", "sender":"'
+                        + $userName + '", " received":""}';
+                wsocket.send(msg);
+                $message.val('').focus();
             }
+
+            function connectToChatserver() {
+                room = $('#chatroom option:selected').val();
+                wsocket = new WebSocket(serviceLocation + room);
+                wsocket.onopen = function () {
+                    var msg = '{"message":" is online", "sender":"' + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                };
+                wsocket.onmessage = onMessageReceived;
+            }
+
+            function leaveRoom() {
+                // let other users know this person left.
+                wsocket.close();
+                $chatWindow.empty();
+                $('.chat-wrapper').hide();
+                $('.chat-signin').show();
+            }
+
+            $(document).ready(function () {
+                $userName = $('#adminId').val();
+                $message = $('#message');
+                $chatWindow = $('#response');
+                $('.chat-wrapper').hide();
+
+                $('#enterRoom').click(function (evt) {
+                    evt.preventDefault();
+                    connectToChatserver();
+                    $('.chat-wrapper h2').text($userName + " is in " + room + " channel");
+                    $('.chat-signin').hide();
+                    $('.chat-wrapper').show();
+                    $message.focus();
+                });
+                $('#do-chat').submit(function (evt) {
+                    evt.preventDefault();
+                    sendMessage()
+                });
+
+                $('#leave-room').click(function () {
+                    var msg = '{"message":" is offline", "sender":"'
+                            + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                    setTimeout(leaveRoom, 300);
+                });
+            });
         </script>
 
     </h:head>    
@@ -56,6 +108,7 @@
     <!-- start menu -->
 
     <h:body style="margin: 0;">
+        <p:inputText type="hidden" id="adminId" value="#{adminLogin.user}" ></p:inputText>
         <p:layout fullPage="true">
 
             <p:layoutUnit position="north" resizable="false" collapsible="true" size="80">
@@ -114,44 +167,46 @@
                                     </p:commandButton>
                                 </p:column>
                             </p:dataTable>
-                        </p:panel>
 
-                        <!-- tickets -->
-                        <p:panel id="Tickets" header="My Support Tickets" closable="true">
-                            <p:toolbar> 
-                                <f:facet name="left">
-                                    <p:commandButton type="button" value="New" icon="ui-icon-document" />
-                                    <p:commandButton type="button" value="Open" icon="ui-icon-folder-open" />
+                            <p:remoteCommand name="rc" update="Tasks" actionListener="#{taskBean.taskList}" />
+                            <p:commandButton type="button" onclick="rc()" value="Execute" icon="ui-icon-refresh" />
+                        </p:panel>                        
 
-                                    <span class="ui-separator">
-                                        <span class="ui-icon ui-icon-grip-dotted-vertical" />
-                                    </span>
+                        <!-- Chat -->
+                        <p:panel id="Chat" header="Chat Utility" closable="true">
+                            <div class="container chat-signin">
+                                <form class="form-signin">
+                                    <div class="btn-group">
+                                        <br />
+                                        <label for="chatroom">Chatroom</label> 
+                                        <select size="1" id="chatroom">
+                                            <option>Cats</option>
+                                            <option>Dogs</option>
+                                            <option>People</option>
+                                            <option>Housing</option>
+                                        </select>
+                                        <br /><br />
+                                    </div>
+                                    <button class="btn btn-large btn-primary" type="submit" id="enterRoom">Sign in</button>
+                                </form>
+                            </div>
+                            <!-- /container -->
+                            <div class="container chat-wrapper">
+                                <form id="do-chat">
+                                    <h2 class="alert alert-success"></h2>
+                                    <!-- /chat window -->
+                                    <div class="chat">
+                                        <table id="response" class="table table-bordered">
 
-                                    <p:commandButton type="button" title="Save" icon="ui-icon-disk" />
-                                    <p:commandButton type="button" title="Delete" icon="ui-icon-trash" />
-                                    <p:commandButton type="button" title="Print" icon="ui-icon-print" />
-                                </f:facet>
-                            </p:toolbar>
-                        </p:panel>
-
-                        <!-- notes -->
-                        <p:panel id="Notes" header="New Note" closable="true">
-                            <p:message for="noteName" id="msgNoteName" />
-                            <p:message for="notesEditor" id="msgNoteEditor" />
-
-                            <p:outputLabel for="noteName" value="Note Name:" />
-                            <br />
-                            <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
-                                <f:validateLength minimum="4" />
-                                <p:ajax event="keyup" update="msgNoteName"  />
-                            </p:inputText>                            
-                            <br /><br />
-                            <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true">
-                                <f:validateLength minimum="25" />                                
-                            </p:editor>
-
-                            <p:commandButton value="Save" action="#{adminNotes.saveNote}" update=""></p:commandButton>
-                            <p:commandButton type="button" value="Clear" onclick="clearNoteFields()"></p:commandButton>
+                                        </table>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
+                                        <input type="submit" class="btn btn-large btn-block btn-primary" value="Send message" />
+                                        <button class="btn btn-large btn-block" type="button" id="leave-room">Leave room</button>
+                                    </div>
+                                </form>
+                            </div>
                         </p:panel>
 
                     </p:dashboard>
@@ -168,7 +223,8 @@
                             <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
                         </p:submenu>
 
-                        <p:submenu label="Mail">
+                        <p:submenu label="E-Mail">
+                            <p:menuitem value="New" icon="ui-icon-disk" onclick="PF('emailDialog').show()" />
                         </p:submenu>
 
                         <p:submenu label="Tasks">
@@ -179,62 +235,37 @@
                         </p:submenu>
 
                     </p:menu>
-                </h:form>
-
-                <br />
-                <br />
-                <br />
-                <!-- chat -->
-                <h:form id="chatForm">
-
-                    <p:outputLabel>Chat</p:outputLabel>
-
-                    <br />
-                    <br />
-
-                    <p:commandButton value="Login" actionListener="#{chatView.login}" update="chatForm"
-                                     icon="ui-icon-person" disabled="false" rendered="#{not chatView.loggedIn}" />
-
-                    <!-- chat stuff -->
-                    <p:remoteCommand name="updateList" update="users" process="@this" />
-                    <p:dataList id="users" var="user" value="#{chatUsers.users}" styleClass="usersList" rendered="#{chatView.loggedIn}">
-
-                        <f:facet name="header">
-                            Users
-                        </f:facet>
-
-                        <p:commandButton title="Chat" icon="ui-icon-comment" oncomplete="PF('pChat').show()" >
-                            <f:setPropertyActionListener value="#{user}" target="#{chatView.privateUser}" />
-                        </p:commandButton>
-
-                        #{user.chatUserFirstName} #{user.chatUserLastName}
-
-                    </p:dataList>
-
-                    <div class="chat">
-                        <p:outputPanel id="publicChat" layout="block" styleClass="chatlogs" />
-                    </div>
-                    
-
-                    <p:separator />
-
-                    <p:inputText value="#{chatView.globalMessage}" styleClass="messageInput" rendered="#{chatView.loggedIn}" />
-                    <p:spacer width="5" />
-                    <p:commandButton value="Send" actionListener="#{chatView.sendGlobal}" oncomplete="$('.messageInput').val('').focus()" rendered="#{chatView.loggedIn}" />
-                    <p:spacer width="5" />
-                    <p:commandButton value="Disconnect" actionListener="#{chatView.disconnect}" global="false" update="chatForm" rendered="#{chatView.loggedIn}" />
-
-                </h:form>
+                </h:form>               
 
             </p:layoutUnit>
 
         </p:layout>
 
-        <h:form id="adminDialog">
-            <p:dialog header="Task Info" widgetVar="taskDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true" dynamic="true">
-                
-                <p:outputPanel id="taskDetail" style="text-align:center;">
+        <h:form id="adminEmail">
+            <p:dialog header="Quick Emailer" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+
+                <p:panelGrid  columns="2" columnClasses="label,value">
+
+                    <h:outputLabel value="To:" for="to" />
+                    <p:inputText id="to" value="#{emailBean.to}" />                    
+
+                    <h:outputLabel value="Subject:" for="subjejct" />
+                    <p:inputText id="subject" value="#{emailBean.subject}" />
+
+                    <h:outputLabel value="Message:" for="body" />
+                    <p:inputTextarea rows="10" cols="50" id="body" value="#{emailBean.body}" />
                     
+                    <p:commandButton value="Send Email" action="#{emailBean.sendEmail}" />
+
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
+
+        <h:form id="adminDialog">
+            <p:dialog header="Task Info" widgetVar="taskDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+
+                <p:outputPanel id="taskDetail" style="text-align:center;">
+
                     <p:panelGrid  columns="2" rendered="#{not empty taskBean.selectedTask}" columnClasses="label,value">
                         <f:facet name="header">
                             Work Task
@@ -256,14 +287,14 @@
                         <p:inputTextarea rows="10" cols="50" id="resolution" value="#{taskServices.res}" ></p:inputTextarea>
 
                     </p:panelGrid>
-                    
+
                     <br />
-                    
+
                     <p:commandButton  value="Save" action="#{taskServices.closeTask}" update="adminForms:saveGrowler" >
                         <f:setPropertyActionListener target="#{taskServices.res}" value="#{taskServices.res}" />
                         <f:setPropertyActionListener target="#{taskServices.a_t_id}" value="#{taskBean.selectedTask.adminTaskId}" />
                     </p:commandButton>
-                    
+
                     <p:commandButton  value="Cancel" onclick="PF('taskDialog').hide()"></p:commandButton>
 
                 </p:outputPanel>
@@ -273,30 +304,27 @@
         <h:form id="adminNotes">
             <p:dialog header="Quick Notes" widgetVar="notesDialog" modal="true" showEffect="fade" 
                       hideEffect="fade" resizable="true">
-                <p:outputPanel id="noteDetail" style="text-align:center;">
-                    <p:panelGrid  columns="2" columnClasses="label,value">
-                        <f:facet name="header">
-                            New Note
-                        </f:facet>                   
 
-                        <h:outputText value="Note Name:" />
-                        <p:inputText id="noteName" value="#{adminNotes.noteName}"></p:inputText>
+                <p:message for="noteName" id="msgNoteName" />
+                <p:message for="notesEditor" id="msgNoteEditor" />
 
-                        <h:outputText value="notes" />
-                        <p:inputTextarea rows="10" cols="50" id="resolution" value="#{adminNotes.notes}" ></p:inputTextarea>
+                <p:outputLabel for="noteName" value="Note Name:" />
+                <br />
+                <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
+                    <f:validateLength minimum="4" />
+                    <p:ajax event="keyup" update="msgNoteName"  />
+                </p:inputText>                            
+                <br /><br />
+                <p:outputLabel for="notesEditor" value="Note:" />
+                <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true" >
+                    <f:validateLength minimum="25" />                                
+                </p:editor>
 
-                    </p:panelGrid>
-                    <br />
-                    <p:commandButton  value="Save" action="#{adminNotes.saveNote}"  partialSubmit="true" process="noteName,resolution" >
-                    </p:commandButton>
-                    <p:commandButton  value="Cancel" onclick="PF('notesDialog').hide()"></p:commandButton>
+                <p:commandButton value="Save" action="#{adminNotes.saveNote}" onsuccess="PF('notesDialog').hide()"></p:commandButton>
+                <p:commandButton type="button" value="Cancel" onclick="PF('notesDialog').hide()" ></p:commandButton>
 
-                </p:outputPanel>
             </p:dialog>
         </h:form>
-
-        <!-- chat socket,script -->
-        <p:socket onMessage="handleMessage" channel="/chat" autoConnect="false" widgetVar='subscriber' />
 
     </h:body>
 
