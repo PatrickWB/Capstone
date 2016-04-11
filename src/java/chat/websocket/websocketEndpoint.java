@@ -29,7 +29,7 @@ public class websocketEndpoint {
     @OnOpen
     public void open(final Session session, @PathParam("room") final String room) {
         log.info("session openend and bound to room: " + room);
-        session.getUserProperties().put("room", room);
+        session.getUserProperties().put("room", room);        
     }
 
     @OnMessage

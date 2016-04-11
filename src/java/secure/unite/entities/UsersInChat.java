@@ -39,6 +39,4 @@ public class UsersInChat {
     public void setChatUserEmail(String chatUserEmail) {
         this.chatUserEmail = chatUserEmail;
     }   
-    
-    
 }

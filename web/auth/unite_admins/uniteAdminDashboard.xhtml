@@ -61,7 +61,7 @@
                 room = $('#chatroom option:selected').val();
                 wsocket = new WebSocket(serviceLocation + room);
                 wsocket.onopen = function () {
-                    var msg = '{"message":" os online", "sender":"' + $userName + '", " received":""}';
+                    var msg = '{"message":" is online", "sender":"' + $userName + '", " received":""}';
                     wsocket.send(msg);
                 };
                 wsocket.onmessage = onMessageReceived;
@@ -98,7 +98,7 @@
                     var msg = '{"message":" is offline", "sender":"'
                             + $userName + '", " received":""}';
                     wsocket.send(msg);
-                    setTimeout(leaveRoom,300);
+                    setTimeout(leaveRoom, 300);
                 });
             });
         </script>
@@ -170,9 +170,9 @@
 
                             <p:remoteCommand name="rc" update="Tasks" actionListener="#{taskBean.taskList}" />
                             <p:commandButton type="button" onclick="rc()" value="Execute" icon="ui-icon-refresh" />
-                        </p:panel>
+                        </p:panel>                        
 
-                        <!-- tickets -->
+                        <!-- Chat -->
                         <p:panel id="Chat" header="Chat Utility" closable="true">
                             <div class="container chat-signin">
                                 <form class="form-signin">
@@ -209,26 +209,6 @@
                             </div>
                         </p:panel>
 
-                        <!-- notes -->
-                        <p:panel id="Notes" header="New Note" closable="true">
-                            <p:message for="noteName" id="msgNoteName" />
-                            <p:message for="notesEditor" id="msgNoteEditor" />
-
-                            <p:outputLabel for="noteName" value="Note Name:" />
-                            <br />
-                            <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
-                                <f:validateLength minimum="4" />
-                                <p:ajax event="keyup" update="msgNoteName"  />
-                            </p:inputText>                            
-                            <br /><br />
-                            <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true">
-                                <f:validateLength minimum="25" />                                
-                            </p:editor>
-
-                            <p:commandButton value="Save" action="#{adminNotes.saveNote}" update=""></p:commandButton>
-                            <p:commandButton type="button" value="Clear" onclick="clearNoteFields()"></p:commandButton>
-                        </p:panel>
-
                     </p:dashboard>
 
                 </h:form>
@@ -243,7 +223,8 @@
                             <p:menuitem value="Update"   icon="ui-icon-arrowrefresh-1-w"/>
                         </p:submenu>
 
-                        <p:submenu label="Mail">
+                        <p:submenu label="E-Mail">
+                            <p:menuitem value="New" icon="ui-icon-disk" onclick="PF('emailDialog').show()" />
                         </p:submenu>
 
                         <p:submenu label="Tasks">
@@ -259,6 +240,26 @@
             </p:layoutUnit>
 
         </p:layout>
+
+        <h:form id="adminEmail">
+            <p:dialog header="Quick Emailer" widgetVar="emailDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
+
+                <p:panelGrid  columns="2" columnClasses="label,value">
+
+                    <h:outputLabel value="To:" for="to" />
+                    <p:inputText id="to" value="#{emailBean.to}" />                    
+
+                    <h:outputLabel value="Subject:" for="subjejct" />
+                    <p:inputText id="subject" value="#{emailBean.subject}" />
+
+                    <h:outputLabel value="Message:" for="body" />
+                    <p:inputTextarea rows="10" cols="50" id="body" value="#{emailBean.body}" />
+                    
+                    <p:commandButton value="Send Email" action="#{emailBean.sendEmail}" />
+
+                </p:panelGrid>
+            </p:dialog>
+        </h:form>
 
         <h:form id="adminDialog">
             <p:dialog header="Task Info" widgetVar="taskDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="true">
@@ -303,25 +304,25 @@
         <h:form id="adminNotes">
             <p:dialog header="Quick Notes" widgetVar="notesDialog" modal="true" showEffect="fade" 
                       hideEffect="fade" resizable="true">
-                <p:outputPanel id="noteDetail" style="text-align:center;">
-                    <p:panelGrid  columns="2" columnClasses="label,value">
-                        <f:facet name="header">
-                            New Note
-                        </f:facet>                   
 
-                        <h:outputText value="Note Name:" />
-                        <p:inputText id="noteName" value="#{adminNotes.noteName}"></p:inputText>
+                <p:message for="noteName" id="msgNoteName" />
+                <p:message for="notesEditor" id="msgNoteEditor" />
 
-                        <h:outputText value="notes" />
-                        <p:inputTextarea rows="10" cols="50" id="resolution" value="#{adminNotes.notes}" ></p:inputTextarea>
+                <p:outputLabel for="noteName" value="Note Name:" />
+                <br />
+                <p:inputText id="noteName" value="#{adminNotes.noteName}" required="true">
+                    <f:validateLength minimum="4" />
+                    <p:ajax event="keyup" update="msgNoteName"  />
+                </p:inputText>                            
+                <br /><br />
+                <p:outputLabel for="notesEditor" value="Note:" />
+                <p:editor id="notesEditor" widgetVar="notesWidget" value="#{adminNotes.notes}" required="true" >
+                    <f:validateLength minimum="25" />                                
+                </p:editor>
 
-                    </p:panelGrid>
-                    <br />
-                    <p:commandButton  value="Save" action="#{adminNotes.saveNote}"  partialSubmit="true" process="noteName,resolution" >
-                    </p:commandButton>
-                    <p:commandButton  value="Cancel" onclick="PF('notesDialog').hide()"></p:commandButton>
+                <p:commandButton value="Save" action="#{adminNotes.saveNote}" onsuccess="PF('notesDialog').hide()"></p:commandButton>
+                <p:commandButton type="button" value="Cancel" onclick="PF('notesDialog').hide()" ></p:commandButton>
 
-                </p:outputPanel>
             </p:dialog>
         </h:form>
 
