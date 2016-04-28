@@ -6,6 +6,7 @@
  *
  */
 
+
 /** body Style **/
 html{
     height: 100%;
@@ -55,7 +56,6 @@ body {
 
 .logoBox h1 {
     font-size: 35px;
-    font-family: 'Helvetica Neue', sans-serif;
     color: #000000;
     font-variant: small-caps;
     text-transform: none; 
@@ -126,25 +126,20 @@ body {
 }
 
 .loginRibbon .ui-button-text{
-    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
 }
 
 .ui-outputlabel{
-    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
 }
 
 .ui-outputlabel a{
-    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
 }
 
 .ui-widget-content {
-    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
 }
 
 .ui-inputfield{
-    font-family: "Adobe Caslon Pro", "Hoefler Text", Georgia, Garamond, Times, serif;
     padding: 8px;
-    
+
 }
 
 .loginform {
@@ -158,7 +153,6 @@ body {
 
 .titleHeader h1 { 
 
-    font-family: 'Helvetica Neue', sans-serif;
     font-size: 55px;
     font-weight: bold;
     letter-spacing: -1px;
@@ -172,7 +166,6 @@ body {
 }
 
 .titleHeader h2 { 
-    font-family: 'Open Sans', sans-serif; 
     font-size: 25px; 
     font-weight: 300; 
     line-height: 32px; 
@@ -224,8 +217,52 @@ body {
 *******************************************************************************/
 
 .chat{
-    height: 250px;
-    overflow-y: scroll;    
+    max-height: 250px;
+    overflow-y: auto;    
+}
+
+.controls{
+    padding: 3px;
+    background-color: #dae8ef; 
+    height: 72px;
+}
+
+.submit-button{
+    display: block;
+    border: none;
+    background-color: #0288d1;
+    color: #ffffff;
+    height: 30px;
+    -webkit-border-radius: 2px !important;
+    -moz-border-radius: 2px !important;
+    border-radius: 2px;
+    margin: 4px;
+}
+
+#message{
+    float: left;
+    margin-right: 10px;
+    border: #dae8ef;
+}
+
+.leave-chat{    
+    display: block;
+    border: none;
+    background-color: #e53935;
+    color: #ffffff;
+    height: 30px;
+    -webkit-border-radius: 2px !important;
+    -moz-border-radius: 2px !important;
+    border-radius: 2px; 
+    margin: 4px;
+}
+
+.controls{
+    width: 100%;
+}
+
+.button-space{ 
+    float: left;
 }
 
 .chat .table{    
@@ -251,3 +288,264 @@ table.table td.message{
     text-align: left;
 }
 
+/*******************************************************************************
+    admin dashboard formatting
+*******************************************************************************/
+
+.admin-title{
+    position: fixed;
+    top: 15px;
+    left: 65px;
+    color: white; 
+    font-size: 28px;
+    padding:  0 0 0 10px;
+}
+
+.admin-id-panel{
+    display: block;
+    height: 50px;
+    width: 98%;
+    color: #546e7a;
+    font-size: 20px;
+    padding: 75px 20px 0px 25px;
+    float: left;
+}
+
+.dashboard{
+    width: 100%;
+    min-height: 400px;
+}
+
+.ui-dashboard{    
+    max-width:  100%;
+}
+
+.admin-menu{
+    height: 50px;
+    width: 100%;
+}
+
+.ui-panel, div.ui-state-hover {
+    margin: 5px;
+    min-height: 250px;
+}
+.ui-dashboard-column {
+    margin: 0;
+    width:50%;
+}            
+.ui-panel .ui-panel-content {  
+    padding: 3px;
+    width: 99%;
+}
+
+#adminDialog .ui-panelgrid-even .ui-dialog-content{
+ background-color: #c1d5df;
+}
+
+.ui-state-default{
+
+}
+
+.ui-dashboard-column{
+    padding-bottom: 0 !important;
+}
+
+.ui-widget-header{
+    border: none;
+    background: none;
+    margin-bottom: 5px;
+    font-weight: 300;
+}
+
+.ui-widget-content{
+    border: none;
+}
+
+.ui-datatable {
+    background-color: #ffffff;
+    color: #546e7a;
+}
+
+.ui-datatable-scrollable-header{
+    margin: 0;
+    border: none;
+    background-color: #ffffff;
+}
+
+.ui-datatable tbody td{
+    border: solid 1px #c1d5df;
+}
+.ui-datatable-resizable thead th, .ui-datatable-resizable tbody td, .ui-datatable-resizable tfoot td{
+
+    white-space: normal !important;
+}
+.ui-datatable table thead tr th,
+.ui-datatable table tfoot tr td,
+.ui-datatable table thead tr th {
+    clear: both;
+    color: #546e7a;
+    background-color: #dae8ef !important;
+    border: solid 1px #c1d5df;
+    outline: none;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.ui-button {
+    cursor: pointer;
+    border: none !important;    
+    background-color: #43A047 !important; 
+    align-content: center;
+}
+
+.ui-button ui-state-default{
+
+}
+
+.ui-button ui-state-hover{  
+
+}
+
+.ui-panel-titlebar{
+    color: #546e7a !important;
+    font-size: 20px;
+    padding: 14px 1em !important;
+    border-radius: 0px !important;
+}
+
+.ui-menu{
+    background: none !important;
+    background-color: #ffffff !important;
+    padding: 0 !important;
+}
+
+.menu-icon{
+    position: fixed;
+    color: white;
+    top: 22px;
+    left: 24px;
+    cursor: pointer;
+
+    &:hover{
+        color: #CDD4D8;
+
+    }
+}
+
+/*
+  Menu
+*/
+nav#slide-menu {
+    position: fixed;
+    top: 0;
+    left: -100px;
+    bottom: 0;
+    display: block;
+    float: left;
+    width: 100%;
+    max-width: 284px;
+    height: 100%;
+
+    -moz-transition: all 300ms;
+    -webkit-transition: all 300ms;
+    transition: all 300ms;
+
+    > ul {
+        display: block;
+        margin: 40px;
+        padding: 0;
+        list-style: none;
+        opacity: 0.5;
+
+        -moz-transition: all 300ms;
+        -webkit-transition: all 300ms;
+        transition: all 300ms;
+
+        li {
+            color: #dfe5eb;
+            padding: 6px 0;
+            cursor: pointer;
+
+            &:hover { color: #59e9df; }
+        }
+
+        li:before {
+            font-family: "ico";
+            font-style: normal;
+            font-weight: normal;
+            speak: none;
+            display: inline-block;
+            text-decoration: inherit;
+            width: 1em;
+            color: #59e9df;
+            margin-right: 12px;
+            text-align: center;
+            font-variant: normal;
+            font-size: 0.75em;
+            text-transform: none;
+            line-height: 1em;
+        }
+
+        li.sep { 
+            margin-top: 7px; 
+            padding-top: 14px; 
+            border-top: 1px solid lighten(#556270, 10%); 
+        }
+
+        li.timeline:before { content: '\e805'; }
+        li.events:before { content: '\e802'; }
+        li.calendar:before { content: '\e800'; }
+        li.settings:before { content: '\e803'; }
+        li.logout:before { content: '\e804'; }
+    }
+}
+
+body.menu-active nav#slide-menu { left: 0px; }
+body.menu-active nav#slide-menu ul { left: 0px; opacity: 1; }
+
+/*
+  Content
+*/
+
+#content {
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	overflow: scroll;
+	border-radius: 0;
+
+	-moz-box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	box-sizing: border-box;
+
+	-moz-box-shadow: -3px 0 6px darken(#556270, 5%);
+	-webkit-box-shadow: -3px 0 6px darken(#556270, 5%);
+	box-shadow: -3px 0 6px darken(#556270, 5%);
+
+	-moz-transition: all 300ms;
+	-webkit-transition: all 300ms;
+	transition: all 300ms;
+
+	.menu-trigger {
+		position: fixed;
+		top: 10px;
+		left: 10px;
+		width: 36px;
+		height: 36px;
+		background: #dfe5eb;
+		cursor: pointer;
+		border-radius: 5px;
+
+		-moz-transition: all 300ms;
+		-webkit-transition: all 300ms;
+		transition: all 300ms;
+		
+
+		&:hover { background: #556270; &:before { color: #fcfeff; } }
+	}
+}
+
+body.menu-active div#content { left: 284px; border-radius: 7px 0 0 7px; }
+body.menu-active div#content .menu-trigger { left: 294px; }
