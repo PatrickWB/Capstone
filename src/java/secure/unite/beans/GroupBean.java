@@ -38,36 +38,7 @@ public class GroupBean implements Serializable{
     public void init(){      
       
     }
-   /* public int getUserLevel(){
-        //int id = 2;
-        String email = "hreneeg@gmail.com";
-        PreparedStatement ps = null;
-        Connection con = null;
-        int level = -1;
-        try{
-            Class.forName("com.mysql.jdbc.Driver");
-            con =  DriverManager.getConnection("jdbc:mysql://uaf132602.ddns.uark.edu:3306/UniteDB", "dev", "devtest1234");
-            ps = con.prepareStatement("select * from UserInformationTable Where 'U_Email' = ?");
-            ps.setString(1, email);
-            ResultSet rs = ps.executeQuery();
-             while (rs.next())
-            {
-                level = rs.getInt("U_Reward_Level");
-            }
-        }catch(Exception e){
-            System.out.println("Get list error--> " + e.getMessage());
-        }
-        finally{
-            try{
-                DataConnect.close(con);
-            }
-            catch(Exception e){
-                e.printStackTrace();
-            }
-        }
-        return level;
-    }
-    */
+    
     public List<Group> getGroupList(){
  
         PreparedStatement ps = null;

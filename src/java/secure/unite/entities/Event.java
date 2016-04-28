@@ -8,13 +8,15 @@
  * Author:      Kaitlin Russ
  * Date:        2/25/2016
  * Description: Form that allows users to create a group in Unite.
- *
+ * Modified by: Heather Guyll
+ * Date:        3/01/2016
+ * 
  */
 package secure.unite.entities;
 
-
 import java.util.Date;
 import java.sql.Time;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
@@ -31,7 +33,9 @@ import unite.DAO.SignupDAO;
 public class Event {
 
     // group creation input variables
+    private int eGroup;
     private String eventname;
+    private String eventNeedStatus;
     private String eventdesc;
     private String eventdate;
     private String eventstart;
@@ -42,7 +46,8 @@ public class Event {
     private String zip;
     private String startdatetime;
     private String enddatetime;
-
+    private Timestamp startTime;
+    private Timestamp endTime;
     // Getters -- Setters
     public String getEventname() {
         return eventname;
@@ -55,7 +60,12 @@ public class Event {
     public String getEventdesc() {
         return eventdesc;
     }
-
+    public void seteGroup(int Egroup){
+      this.eGroup = Egroup;
+    }
+    public int geteGroup(){
+        return eGroup;
+    }
     public void setEventdesc(String eventdesc) {
         this.eventdesc = eventdesc;
     }
@@ -136,7 +146,7 @@ public class Event {
         this.eventend = eventend;
         enddatetime = eventdate + " " + eventstart;
     }
-            
+    
     /*private static java.sql.Date convertUtilToSql(java.util.Date uDate) {
         java.sql.Date newdate = new java.sql.Date(uDate.getTime());
         return newdate;
@@ -165,6 +175,48 @@ public class Event {
     public static String Cancel() {
         System.out.println("Event Creation was Cancelled");
         return "cancel";
+    }
+
+    /**
+     * @return the eventNeedStatus
+     */
+    public String getEventNeedStatus() {
+        return eventNeedStatus;
+    }
+
+    /**
+     * @param eventNeedStatus the eventNeedStatus to set
+     */
+    public void setEventNeedStatus(String eventNeedStatus) {
+        this.eventNeedStatus = eventNeedStatus;
+    }
+
+    /**
+     * @return the startTime
+     */
+    public Timestamp getStartTime() {
+        return startTime;
+    }
+
+    /**
+     * @param startTime the startTime to set
+     */
+    public void setStartTime(Timestamp startTime) {
+        this.startTime = startTime;
+    }
+
+    /**
+     * @return the endTime
+     */
+    public Timestamp getEndTime() {
+        return endTime;
+    }
+
+    /**
+     * @param endTime the endTime to set
+     */
+    public void setEndTime(Timestamp endTime) {
+        this.endTime = endTime;
     }
 
 }

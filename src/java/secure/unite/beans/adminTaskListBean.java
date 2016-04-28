@@ -35,6 +35,7 @@ public class adminTaskListBean implements Serializable {
         // generate the list for the xhtml
         taskList = service.gatherAdminTasks();
     }
+    
     public List<Task> getTaskList() {
         return taskList;
     }

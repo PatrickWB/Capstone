@@ -50,7 +50,8 @@ public class adminDashboardBean implements Serializable {
         DashboardColumn column2 = new DefaultDashboardColumn();
 
         column1.addWidget("Tasks");
-        column2.addWidget("Chat");          
+        column2.addWidget("Chat");    
+        column2.addWidget("Email");
 
         model.addColumn(column1);
         model.addColumn(column2);   

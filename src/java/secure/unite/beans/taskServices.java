@@ -51,7 +51,7 @@ public class taskServices {
     }
 
     // task resolution updater
-    public void closeTask() {
+    public void closeTask() {        
         Connection con = null;
         PreparedStatement ps = null;
         java.util.Date now = new java.util.Date();
@@ -94,7 +94,6 @@ public class taskServices {
         } catch (SQLException ex) {
             Logger.getLogger(taskServices.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
 
     // task list creator

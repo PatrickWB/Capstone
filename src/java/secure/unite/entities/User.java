@@ -40,7 +40,7 @@ public class User {
     private int uDisabled;
     private int uGid;
     private int uFirstTime;
-    
+    private int uLoggedIn;    
     
     public void setuId(int id){
         this.uId = id;
@@ -160,6 +160,14 @@ public class User {
     public int getuFirstTime(){
         
         return uFirstTime;
+    }
+
+    public int getuLoggedIn() {
+        return uLoggedIn;
+    }
+
+    public void setuLoggedIn(int uLoggedIn) {
+        this.uLoggedIn = uLoggedIn;
     }
     
     

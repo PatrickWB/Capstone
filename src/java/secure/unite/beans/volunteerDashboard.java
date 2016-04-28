@@ -3,6 +3,8 @@
  * Description: This bean is repsonsible for rendering the Administration Dashboard.
  *              All data for dashboard must be in separate beans.
  *
+Author: heather Guyll
+
  */
 package secure.unite.beans;
 
@@ -45,8 +47,11 @@ public class volunteerDashboard implements Serializable {
         DashboardColumn column2 = new DefaultDashboardColumn();
 
         column1.addWidget("Summary");
+        column2.addWidget("events");
         column2.addWidget("Groups");
         column2.addWidget("Rewards");
+        column2.addWidget("Chat");
+        column2.addWidget("searching");
 
         model.addColumn(column1);
         model.addColumn(column2);
