@@ -14,7 +14,7 @@ import javax.annotation.PostConstruct;
 import javax.faces.application.FacesMessage;
 import javax.faces.bean.ManagedBean;
 import javax.faces.bean.ManagedProperty;
-import javax.faces.bean.SessionScoped;
+import javax.faces.bean.ViewScoped;
 import javax.faces.context.FacesContext;
 
 import org.primefaces.event.CloseEvent;
@@ -31,7 +31,7 @@ import javax.servlet.http.HttpSession;
 import javax.ejb.SessionContext;
 
 @ManagedBean
-@SessionScoped
+@ViewScoped
 public class adminDashboardBean implements Serializable {
 
     private DashboardModel model;
@@ -50,8 +50,7 @@ public class adminDashboardBean implements Serializable {
         DashboardColumn column2 = new DefaultDashboardColumn();
 
         column1.addWidget("Tasks");
-        column1.addWidget("Notes");
-        column2.addWidget("Tickets");        
+        column2.addWidget("Chat");          
 
         model.addColumn(column1);
         model.addColumn(column2);   
@@ -83,13 +82,6 @@ public class adminDashboardBean implements Serializable {
 
     public void HandleReorder(DashboardReorderEvent event) {
 
-        /*
-        FacesMessage message = new FacesMessage();
-        message.setSeverity(FacesMessage.SEVERITY_INFO);
-        message.setSummary("Reordered: " + event.getWidgetId());
-        message.setDetail("Item index: " + event.getItemIndex() + ", Column index: " + event.getColumnIndex() + ", Sender index: " + event.getSenderColumnIndex());
-        addMessage(message);
-         */
     }
 
     public void transferWidget(DashboardColumn from, DashboardColumn to, String WidgetId, int index) {
@@ -101,7 +93,7 @@ public class adminDashboardBean implements Serializable {
         HttpSession session = SessionState.getSession();
         session.invalidate();
         System.out.println("admin was logged out from dashboard");
-        return "logout";
+        return "/index.xhtml?faces-redirect=true";
     }
 
 }

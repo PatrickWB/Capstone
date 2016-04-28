@@ -32,15 +32,30 @@ public class SessionState {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         return session.getAttribute("username").toString();
     }
-
+    
+    public static String getUserID(){
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        return session.getAttribute("userID").toString();
+    }
+    
+    public static String getAdminName(){
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        return session.getAttribute("adminName").toString();
+    }
+    
     public static String getAdminID() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
         return session.getAttribute("adminId").toString();
     }
-
-    public static String getMasterAdmin() {
+    
+    public static String getMasterID() {
         HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
-        return session.getAttribute("masterAdmin").toString();
+        return session.getAttribute("MasterID").toString();
+    }
+    
+    public static String getMasterName(){
+        HttpSession session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(false);
+        return session.getAttribute("Mastername").toString();
     }
 
 //    public static String getUserID() {

@@ -1,5 +1,4 @@
 /*
- *
  * Author:      Patrick Bartholomew
  * Date:        2/24/2016
  * Modified:    2/27/2016
@@ -59,6 +58,4 @@ public class adminTaskListBean implements Serializable {
     public void setSelectedTasks(List<Task> selectedTasks) {
         this.selectedTasks = selectedTasks;
     }
-
-
 }

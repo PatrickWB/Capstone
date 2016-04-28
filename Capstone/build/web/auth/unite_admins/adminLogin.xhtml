@@ -6,41 +6,51 @@
       xmlns:c="http://xmlns.jcp.org/jsp/jstl/core">
     <h:head>
         <title>Unite Administration Login</title>
-        <link href="/Capstone/resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
-        <link href="/Capstone/resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
-        
+        <link href="../../resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="../../resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
+
     </h:head>
 
-    <h:body>  
+    <h:body class="bgimg">  
 
 
-        <div class="loginform">   
+        <div class="titleHeader">
             <h1 class="title">Login Panel</h1>
             <h2>Unite Administrator Login Page</h2>
-            <br />
-            <h:form>
-                <p:panel styleClass="rmborder">
-                    <p:messages />
-                    <div style="float: left; width:300px;">
-                        <p:outputLabel value="User ID:" id="userid"></p:outputLabel>                     
-                        <br/> 
-                        <p:message for="userid"></p:message>                        
-                        <p:inputText id="txtUserId" value="#{adminLogin.user}" required="true" label="UserId">
-                            <p:ajax update="userid" event="blur" />
-                        </p:inputText>
-                    </div>
-                    <div style="float: left; width:399px;">
-                        <p:outputLabel value="Password:" id="password"></p:outputLabel>                    
-                        <br/> 
-                        <p:message for="password" id="msgPassword"></p:message>                        
-                        <p:password id="txtPassword" value="#{adminLogin.pwd}" required="true">
-                            <p:ajax update="password" event="blur" />
-                        </p:password>
-                    </div>
-                    <br /><br /><br />
-                    <p:commandButton value="Log In" action="#{adminLogin.CheckLogin}" process="@this" validateClient="true" ajax="false"></p:commandButton>  
-                </p:panel>                                      
-            </h:form>     
+        </div>
+
+        <div class="loginform">   
+
+            <div class="loginRibbon">
+            
+            <div class="loginCreds"> 
+                <h:form class="loginForm">
+                    <p:panel styleClass="rmborder">
+                        <p:messages />
+                        <div style="float: left; width:300px;">
+                            <p:outputLabel value="User ID:" id="userid"></p:outputLabel>                     
+                            <br/> 
+                            <p:message for="userid"></p:message>                        
+                            <p:inputText id="txtUserId" value="#{adminLogin.user}" required="true" label="UserId">
+                                <p:ajax update="userid" event="blur" />
+                            </p:inputText>
+                        </div>
+                        <div style="float: left; width:399px;">
+                            <p:outputLabel value="Password:" id="password"></p:outputLabel>                    
+                            <br/> 
+                            <p:message for="password" id="msgPassword"></p:message>                        
+                            <p:password id="txtPassword" value="#{adminLogin.pwd}" required="true">
+                                <p:ajax update="password" event="blur" />
+                            </p:password>
+                        </div>
+                        <br /><br /><br />
+                        <p:commandButton value="Log In" action="#{adminLogin.CheckLogin}" process="@this" validateClient="true" ajax="false"></p:commandButton>  
+                    </p:panel>                                      
+                </h:form>   
+
+            </div>
+
+            </div>
 
         </div>
     </h:body>
