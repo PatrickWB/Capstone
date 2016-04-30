@@ -1,30 +1,403 @@
 <?xml version='1.0' encoding='UTF-8' ?>
-
-<!DOCTYPE html>
-<html 
-    xmlns="http://www.w3.org/1999/xhtml"
-    xmlns:p="http://primefaces.org/ui"
-    xmlns:h="http://java.sun.com/jsf/html"
-    xmlns:f="http://java.sun.com/jsf/core">
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:f="http://xmlns.jcp.org/jsf/core">
 
     <h:head>
-        <script src="Resources/converse.min.js" type="text/javascript"></script>
-        <link href="Resources/converse.min.css" rel="stylesheet" type="text/css"/>
-        
-        <title>User Dashboard</title>
-    </h:head>    
-    <body>
-        <h:form>
-        <p:tabView>
-            <p:tab title="Dashboard">
-                <h:panelGrid columns="2" cellpadding="2">
-                    <p:panel>
-                     
-                        
-                    </p:panel>
+        <title>Unite Dashboard for #{login.user}</title>
+        <link href="../../resources/CSS/normalize.css" rel="stylesheet" type="text/css"/>
+        <link href="../../resources/CSS/Unite.css" rel="stylesheet" type="text/css"/>
 
-                    <h:form>       
-                        <p:panel id="groupp" header="Your Groups" style = "width: 60%"> 
+        <style type="text/css">
+            .ui-panel, div.ui-state-hover {
+                margin: 10px;
+                width: 98%;
+                min-height: 200px;
+            }
+            .ui-dashboard-column {
+                margin: 0;
+                width:48%;
+            }            
+            .ui-panel .ui-panel-content {  
+                padding: 0;
+            }
+
+            .ui-panelgrid .ui-panel-content {
+
+            }
+        </style>
+<script>
+            var wsocket;
+            //var serviceLocation = "ws://localhost:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            var serviceLocation = "ws://uaf132602.ddns.uark.edu:8080/Capstone/chat/"; // needs to be edited to reflect the server being used.
+            var $userName;
+            var $message;
+            var $chatWindow;
+            var room = '';
+
+            function onMessageReceived(evt) {
+                //var msg = eval('(' + evt.data + ')');
+                var msg = JSON.parse(evt.data); // native API
+                var $messageLine =
+                        $(' <tr>\n\<td class="received"> ' + msg.received
+                                + ' </td><td class="user label label-info"> ' + msg.sender
+                                + ': </td><td class="message badge">' + msg.message
+                                + ' </td></tr> ');
+                $chatWindow.append($messageLine);
+            }
+            function sendMessage() {
+                var msg = '{"message":"' + $message.val() + '", "sender":"'
+                        + $userName + '", " received":""}';
+                wsocket.send(msg);
+                $message.val('').focus();
+            }
+
+            function connectToChatserver() {
+                room = $('#chatroom option:selected').val();
+                wsocket = new WebSocket(serviceLocation + room);
+                wsocket.onopen = function () {
+                    var msg = '{"message":" is online", "sender":"' + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                };
+                wsocket.onmessage = onMessageReceived;
+            }
+
+            function leaveRoom() {
+                // let other users know this person left.
+                wsocket.close();
+                $chatWindow.empty();
+                $('.chat-wrapper').hide();
+                $('.chat-signin').show();
+            }
+
+            $(document).ready(function () {
+                $userName = $('#adminId').val();
+                $message = $('#message');
+                $chatWindow = $('#response');
+                $('.chat-wrapper').hide();
+
+                $('#enterRoom').click(function (evt) {
+                    evt.preventDefault();
+                    connectToChatserver();
+                    $('.chat-wrapper h2').text($userName + " is in " + room + " channel");
+                    $('.chat-signin').hide();
+                    $('.chat-wrapper').show();
+                    $message.focus();
+                });
+                $('#do-chat').submit(function (evt) {
+                    evt.preventDefault();
+                    sendMessage();
+                });
+
+                $('#leave-room').click(function () {
+                    var msg = '{"message":" is offline", "sender":"'
+                            + $userName + '", " received":""}';
+                    wsocket.send(msg);
+                    setTimeout(leaveRoom, 300);
+                });
+            });
+        </script>
+    </h:head>    
+
+    <h:body style="margin: 0;">
+     <p:inputText type="hidden" id="adminId" value="#{login.user}" ></p:inputText>
+        <p:layout fullPage="true">
+
+            <p:layoutUnit position="north" resizable="false" collapsible="true" size="80">
+                <h:form id="userMenu">
+                    <div>
+                        <p:menubar>
+                            <p:menuitem  value=""></p:menuitem>
+                            <p:submenu label="#{login.user}'s Dashboard" icon="ui-icon-document" >                    
+                            </p:submenu>
+
+                            <f:facet name="options">
+                                <p:commandButton value="Logout" action="#{login.logout}"  />
+                            </f:facet>
+                        </p:menubar>
+                    </div>    
+                </h:form>
+            </p:layoutUnit>
+
+            <p:layoutUnit position="center" resizable="true">
+
+                <h:form id="volunteerForms">
+                    <p:growl id="signupMessage" showDetail="true" severity="warn"/>
+
+                    <p:growl id="msgs" showDetail="true" />
+                    <p:growl id="taskErrorGrowler" showDetail="true" severity="warn"/>
+                    <p:growl id="saveGrowler" showDetail="true" severity="info" />
+                    
+                    <p:dashboard id="board" model="#{volunteerDashboard.model}">
+                        <p:ajax event="reorder" update="msgs" listener="#{volunteerDashboard.HandleReorder}" />
+
+                        <!-- Rewards -->
+                        <p:panel id="Rewards" header="My Rewards" closable="true" >
+                            <h:outputText value="Level: #{levelbean.getUserLevel()}" />
+                     
+
+
+
+
+                        </p:panel>
+                        
+                        <!-- profile summary -->
+     
+                        <p:panel id="Summary" toggleable="true" header="My profile summary" closable="true">  
+                           
+                           
+                            <p:dataList var = "u" value="#{profilebean.getUserInfo()}" >
+                            
+                            <p:row>
+                            <h:outputText style = "display: none" value ="#{u.uId}"/>
+                            </p:row>
+                            
+                            <p:row>
+                            <h:outputText value ="User ID: #{u.uEmail}"/> 
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="First Name: #{u.uFirst}"/> 
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Last Name: #{u.uLast}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Phone: #{u.uPhone}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Address: #{u.uAddress}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="State: #{u.uState}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Zip: #{u.uZip}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Admin?: #{u.uAdmin}" style = "display: none"/>
+                            </p:row>
+                            
+                            <p:row>
+                            <h:outputText value ="Group Name: #{u.uGname}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Create Date: #{u.uCdate}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Reward Points: #{u.uRpoints}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Reward Level: #{u.uRlevel}"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Disabled: #{u.uDisabled}" style = "display: none"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="Group Id: #{u.uGid}" style = "display: none"/>
+                            </p:row>
+                            <br/>
+                            <p:row>
+                            <h:outputText value ="First Time: #{u.uFirstTime}" style = "display: none"/>
+                            </p:row>
+                           <br/>
+                        </p:dataList>
+                            <p:commandButton onclick="PF('testPanel').show()" value="Edit Profile" type="button"/>
+                            <p:panel  style = "display: none" widgetVar="testPanel" >
+                                
+                                 <p:commandButton onclick="PF('testPanel').close();" value="Cancel" type="button"/>
+                            
+                           <div id = "changeProfile"> 
+                            <table>
+                                <tr>
+                                    <td>
+                                        Email :
+                                    </td>
+                                    <td>
+                                        <p:inputText value="#{profilebean.newId}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        First Name: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newFirst}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Last Name:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newLast}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Phone Number:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newPhone}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Address: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newAddress}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        State: 
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newState}"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        Zip:
+                                    </td>
+                                    <td>
+                                        <p:inputText value = "#{profilebean.newZip}"/>
+                                    </td>
+                                </tr>
+                                <br/>
+
+                            </table>
+                           </div>
+                            <br/><br/>
+                            <p:commandButton value="Submit Changes" action="#{profilebean.updateProfile}" update="volunteerForms:saveGrowler" onsuccess="PF('eventDialog').hide()"  />
+                   
+                        </p:panel>        
+                            <br />
+                            <br/>
+                            Search for a group that matches your interests!
+                            <br /> <br/> <br/>
+                            Enter Search: <p:inputText id = "search" value="#{searchBean.searchInput}">
+                            
+                            </p:inputText>                            
+                            
+                            <br/><br/>
+                            Zip Code: <p:inputText id = "searchZip" value="#{searchBean.zip}">
+                            
+                            </p:inputText>  
+                            <br/><br/>
+                            <p:remoteCommand name="rcSearch" update="searching" actionListener="#{searchBean.searchGroups}" />
+                            <p:commandButton type="button" onclick="rcSearch()" value="Search" icon="ui-icon-refresh" />
+                            <br/>
+                            <br/>
+                                       <p:separator />
+                            Search by Category:
+                            <br/>
+                            <br/>
+                            <h:panelGrid columns="2" cellpadding="5">
+                                <p:outputLabel for="category" value="category" />
+                                <p:selectOneMenu id="category" value="#{searchBean.category}" style="width:150px">
+                                    <p:ajax listener="#{dropdownView.onCategoryChange}" update="category" />
+                                    <f:selectItem itemLabel="Select Category" itemValue="#{searchBean.category}" noSelectionOption="true" />
+                                    <f:selectItems value="#{dropdownView.categoryList}" />
+                                </p:selectOneMenu>
+                            </h:panelGrid>
+
+                            <br/>
+                            Zip Code: <p:inputText id = "categoryZip" value="#{searchBean.zip}"></p:inputText>
+                            <br/><br/>
+                            <p:remoteCommand name="rcSearch2" update="searching" actionListener="#{searchBean.searchCategory}" />
+                            <p:commandButton value="Search" onclick="rcSearch2()" icon="ui-icon-refresh" />
+                        </p:panel>   
+
+                        <p:panel id="searching" header="Groups That Meet Search Criteria" closable="true">
+
+                            <p:dataTable var="volunteer" value="#{searchBean.list}" resizableColumns="true" scrollable="true"  
+                                         scrollHeight="330" lazy="true" draggableColumns="true" draggableRows="true"
+                                         rowHover="true">                                
+
+                                <p:column id = "gId" headerText = "Group Id" style = "display: none"> 
+                                    <h:outputText value ="#{volunteer.g_id}"/>
+                                </p:column>
+
+                                <p:column headerText = "Name">
+                                    <h:outputText value ="#{volunteer.g_name}"/>
+                                </p:column>
+
+                                <p:column headerText = "Active" style = "display: none">
+                                    <h:outputText value ="#{volunteer.g_active}"/>
+                                </p:column>
+
+                                <p:column headerText = "Description">
+                                    <h:outputText value ="#{volunteer.g_description}"/>
+                                </p:column>
+
+                                <p:column headerText = "Address">
+                                    <h:outputText value ="#{volunteer.g_address}"/>
+                                </p:column>
+                                <p:column headerText = "City">
+                                    <h:outputText value ="#{volunteer.g_city}"/>
+                                </p:column>                         
+
+                                <p:column headerText = "State">
+                                    <h:outputText value ="#{volunteer.g_state}"/>
+                                </p:column>
+
+                                <p:column headerText = "Zip">
+                                    <h:outputText value ="#{volunteer.g_zip}"/>
+                                </p:column>
+
+                                <p:column headerText = "Category">
+                                    <h:outputText value ="#{volunteer.g_category}"/>
+                                </p:column>    
+                                <p:column headerText = "Date Created">
+                                    <h:outputText value ="#{volunteer.getCreatedDate()}"/>
+                                </p:column>         
+
+                            </p:dataTable>
+
+                        </p:panel>
+                        <!-- groups -->
+                        <p:panel id = "events" header = "Upcoming Events">
+                            <p:dataTable id ="eventData" var="k" value="#{eBean.getEventList()}" >
+                                <p:column id = "gId" headerText = "Group Id" style = "display: none"> 
+                                    <h:outputText value ="#{k.eGroup}"/>
+                                </p:column>
+
+                                <p:column headerText = "Event Name">
+                                    <h:outputText value ="#{k.eventname}"/>
+                                </p:column>
+
+                                <p:column headerText = "Description">
+                                    <h:outputText value ="#{k.eventdesc}"/>
+                                </p:column>
+                                <p:column headerText = "Start Time">
+                                    <h:outputText value ="#{k.startTime}"/>
+                                </p:column>
+                                <p:column headerText = "End Time">
+                                    <h:outputText value ="#{k.endTime}"/>
+                                </p:column>
+                                <p:column headerText = "">
+                                <p:commandButton value="Sign Up" update="volunteerForms:signupMessage" action="#{eBean.signUp()}">
+                                 <f:setPropertyActionListener value="#{k}" target="#{eBean.selectedEvent}" />
+                                </p:commandButton>
+                                </p:column>
+                            </p:dataTable> 
+                        </p:panel>
+                        <p:panel id="Groups" header="My Groups" closable="true">
                             <p:dataTable id ="groups" var="u" value="#{groupbean.getGroupList()}" >
                                 <p:column id = "gId" headerText = "Group Id" style = "display: none"> 
                                     <h:outputText value ="#{u.g_id}"/>
@@ -60,215 +433,197 @@
                                 <p:column headerText = "Category">
                                     <h:outputText value ="#{u.g_category}"/>
                                 </p:column>    
-                                <p:column headerText = "Date Created">
-                                    <h:outputText value ="#{u.getCreatedDate()}"/>
-                                </p:column> 
+
 
                             </p:dataTable>
-
                         </p:panel>
-                        <br />
-                        <br />
-                    </h:form>
-                </h:panelGrid>
+                        
+                             <!-- Chat -->
+                        <p:panel id="Chat" header="Chat Utility" closable="true">
+                            <div class="container chat-signin">
+                                <form class="form-signin">
+                                    <div class="btn-group">
+                                        <br />
+                                        <label for="chatroom">Chatroom</label> 
+                                        <select size="1" id="chatroom">
+                                            <option>Cats</option>
+                                            <option>Dogs</option>
+                                            <option>People</option>
+                                            <option>Housing</option>
+                                        </select>
+                                        <br /><br />
+                                    </div>
+                                    <button class="btn btn-large btn-primary" type="submit" id="enterRoom">Sign in</button>
+                                </form>
+                            </div>
+                            <!-- /container -->
+                            <div class="container chat-wrapper">
+                                <form id="do-chat">
+                                    <h2 class="alert alert-success"></h2>
+                                    <!-- /chat window -->
+                                    <div class="chat">
+                                        <table id="response" class="table table-bordered">
 
-                <h:form>
-                    <p:panel id="rewards" header="Unite Rewards" style = "width: 30%">    
+                                        </table>
+                                    </div>
+                                    <div class="controls">
+                                        <input type="text" class="input-block-level" placeholder="Your message..." id="message" style="height:60px"/>
+                                        <input type="submit" class="btn btn-large btn-block btn-primary" value="Send message" />
+                                        <button class="btn btn-large btn-block" type="button" id="leave-room">Leave room</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </p:panel>
 
-                        <h:outputText value="Level: #{levelbean.getUserLevel()}" />
-                    </p:panel>
+                    </p:dashboard>
+                    
                 </h:form>
 
-                <p:panel id="events" header="Upcoming Events" style = "width: 30%">    
+            </p:layoutUnit>
 
-                </p:panel>
-
-
-                <h:panelGrid columns="2" cellpadding="5" style = "position: absolute; right: 0px;">
-                    <h:form>
-                        <p:outputLabel for="inline" />
-                        <p:calendar id="inline" value="#{calendarView.date1}" mode="inline" />
-                    </h:form>    
-                </h:panelGrid>
-
-            </p:tab>
-            <p:tab title = "Profile Summary">
-                <form>
-                    <h:form>
-                        <p:commandButton value = "Update Profile"/>
-                    </h:form>
-
-                    <br/>
-
-                    <h:panelGrid id ="profileSummary" style ="width: 50%">
+            <p:layoutUnit position="east" resizable="true" size="250" collapsible="true">
+                <h:form id="volunteerSideMenu">
+                    <p:menu>
                         
+                        <p:submenu label="Summary">
+                        </p:submenu>
 
-                        <p:dataList var = "u" value="#{profilebean.getUserInfo()}">
-                            
-                            <p:row>
-                            <h:outputText style = "display: none" value ="#{u.getuId()}"/>
-                            </p:row>
-                            
-                            <p:row>
-                            <h:outputText value ="User ID: #{u.getuEmail()}"/> 
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="First Name: #{u.getuFirst()}"/> 
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Last Name: #{u.getuLast()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Phone: #{u.getuPhone()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Address: #{u.getuAddress()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="State: #{u.getuState()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Zip: #{u.getuZip()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Admin?: #{u.getuAdmin()}" style = "display: none"/>
-                            </p:row>
-                            
-                            <p:row>
-                            <h:outputText value ="Group Name: #{u.getuGname()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Create Date: #{u.getuCdate()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Reward Points: #{u.getuRpoints()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Reward Level: #{u.getuRlevel()}"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Disabled: #{u.getuDisabled()}" style = "display: none"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="Group Id: #{u.getuGid()}" style = "display: none"/>
-                            </p:row>
-                            <br/>
-                            <p:row>
-                            <h:outputText value ="First Time: #{u.getuFirstTime()}" style = "display: none"/>
-                            </p:row>
-                           <br/>
-                            <table>
-                                <tr>
-                                    <td>
-                                        Email :
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuEmail()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        First Name: 
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuFirst()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Last Name:
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuLast()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Phone Number:
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuPhone()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Address: 
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuAddress()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        State: 
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuState()}"/>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        Zip:
-                                    </td>
-                                    <td>
-                                        <p:inputText value = "#{u.getuZip()}"/>
-                                    </td>
-                                </tr>
-                                <br/>
+                        <p:submenu label="Rewards">
+                        </p:submenu>
 
-                            </table>
+                    </p:menu>
+                    <br />
+                    <p:menuButton value="Group Options">
+                        <p:menuitem value="Create Group" id="groupCreationBox" onclick="PF('groupDialog').show();" />
+                    </p:menuButton>
+                    <br />
+                    <br />
+                    <p:menuButton value="Event Options">
+                        <p:menuitem value="Create Event" id="eventCreationBox" onclick="PF('eventDialog').show();" />
+                    </p:menuButton>
+                </h:form>
 
+            </p:layoutUnit>
+        </p:layout>
 
+        
+        <h:form id="createGroupDialog">
+            <p:dialog header="Volunteering Organization Creation Form" widgetVar="groupDialog" modal="true" showEffect="fade" 
+                      hideEffect="fade" resizable="true">
+                <p:outputPanel id="groupDetail" style="text-align:center;">
+                    <p:panel>
+                    <p:messages />
+                    <p:panelGrid columns="2" >
 
-                        </p:dataList>
+                        <h:outputLabel for="groupname" value="Group Name: " /> 
+                        <p:inputText id="groupname" value="#{groupsignup.groupname}"/>
+                        <p:message for="groupname" />
+                        <h:outputText value="" />
 
-                    </h:panelGrid>
-                </form>
-            </p:tab>
-            <p:tab title = "Messages">
+                        <h:outputLabel for="groupdesc" value="Group Description: " /> 
+                        <p:inputText id="groupdesc" value="#{groupsignup.groupdesc}"/>
+                        <p:message for="groupdesc" />
+                        <h:outputText value="" />
+                        
+                        <h:outputLabel for="groupcat" value="Group Category: " /> 
+                        <p:selectOneMenu id="grouptcat" value="#{groupsignup.groupcat}" style="width:125px">
+                           <f:selectItem itemLabel="Select One" itemValue="" />
+                           <f:selectItem itemLabel="Animals" itemValue="1" />
+                           <f:selectItem itemLabel="Medical" itemValue="2" />
+                           <f:selectItem itemLabel="Construction" itemValue="3" />
+                           <f:selectItem itemLabel="Education" itemValue="4" />
+                           <f:selectItem itemLabel="Relief Groups" itemValue="5" />
+                        </p:selectOneMenu>
 
-            </p:tab>
-        </p:tabView>
+                        <h:outputLabel for="addr" value="Address: " /> 
+                        <p:inputText id="addr" value="#{groupsignup.address}"/>
+                        <p:message for="addr" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="city" value="City: " /> 
+                        <p:inputText id="city" value="#{groupsignup.city}"/>
+                        <p:message for="city" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="state" value="State: " /> 
+                        <p:inputText id="state" value="#{groupsignup.state}"/>
+                        <p:message for="state" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="zip" value="Zip Code: " /> 
+                        <p:inputText id="zip" value="#{groupsignup.zip}"/>
+                        <p:message for="zip" />
+                        <h:outputText value="" />
+                    </p:panelGrid>
+                </p:panel>                  
+                    <p:commandButton value="Create My Group" action="#{groupsignup.setupNewGroup}" update="volunteerForms:saveGrowler" onsuccess="PF('groupDialog').hide()" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p:commandButton value="Cancel" onclick="PF('groupDialog').hide()" />  
+
+                </p:outputPanel>
+            </p:dialog>
         </h:form>
-    </body>
-    <script>  
-    require(['converse'], function (converse) {  
-       converse.initialize({  
-            bosh_service_url: 'http://uaf132602.ddns.uark.edu:7070/http-bind/',   
-            i18n: locales['en'],
-            keepalive: true,  
-            message_carbons: true,  
-            play_sounds: true,  
-            roster_groups: true,  
-            show_controlbox_by_default: true,  
-            xhr_user_search: false,  
-  allow_muc: false,  
-  auto_reconnect: true,  
-  allow_registration: false,  
-  debug: false,  
-  use_otr_by_default: true,  
-  visible_toolbar_buttons:   
-  {  
-  call: false,  
-  clear: true,  
-  emoticons: true,  
-  toggle_participants: false   
-  }  
-  
-        });  
-    });  
-</script>
+        
+        
+         <h:form id="createEventDialog">
+            <p:dialog header="Event Creation Form" widgetVar="eventDialog" modal="true" showEffect="fade" 
+                      hideEffect="fade" resizable="true">
+                <p:outputPanel id="groupDetail" style="text-align:center;">
+                    <p:panel header="Create a New Event">
+                    <p:messages />
+                    <p:panelGrid columns="2" >
+                        <h:outputLabel for="eventname" value="Event Name: " /> 
+                        <p:inputText id="eventname" value="#{event.eventname}"/>
+                        <p:message for="eventname" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="eventdesc" value="Event Description: " /> 
+                        <p:inputText id="eventdesc" value="#{event.eventdesc}"/>
+                        <p:message for="eventdesc" />
+                        <h:outputText value="" />
+
+                        <p:outputLabel for="eventdate" value="Select Event Date:" />
+                        <p:calendar id="eventdate" value="#{event.eventdate}" />
+                        
+                        <p:outputLabel for="eventstart" value="Start Time:" />
+                        <p:calendar id="eventstart" value="#{event.eventstart}" pattern="HH:mm" timeOnly="true"  />
+                        
+                        <p:outputLabel for="eventend" value="End Time:" />
+                        <p:calendar id="eventend" value="#{event.eventend}" pattern="HH:mm" timeOnly="true"  />
+                        
+                        <h:outputLabel for="addr" value="Address: " /> 
+                        <p:inputText id="addr" value="#{event.address}"/>
+                        <p:message for="addr" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="city" value="City: " /> 
+                        <p:inputText id="city" value="#{event.city}"/>
+                        <p:message for="city" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="state" value="State: " /> 
+                        <p:inputText id="state" value="#{event.state}"/>
+                        <p:message for="state" />
+                        <h:outputText value="" />
+
+                        <h:outputLabel for="zip" value="Zip Code: " /> 
+                        <p:inputText id="zip" value="#{event.zip}"/>
+                        <p:message for="zip" />
+                        <h:outputText value="" />
+                        
+                    </p:panelGrid>
+                </p:panel>                  
+                <p:commandButton value="Create New Event" action="#{event.setupNewEvent}" update="volunteerForms:saveGrowler" onsuccess="PF('eventDialog').hide()" />
+                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                <p:commandButton value="Cancel" onclick="PF('eventDialog').hide()" />
+
+                </p:outputPanel>
+            </p:dialog>
+             
+
+        </h:form>
+ 
+
+    </h:body>
 </html>
 
