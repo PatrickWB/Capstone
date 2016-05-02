@@ -221,13 +221,13 @@
                                  <p:commandButton onclick="PF('testPanel').close();" value="Cancel" type="button"/>
                             
                            <div id = "changeProfile"> 
-                            <table>
+                                     <table>
                                 <tr>
                                     <td>
                                         Email :
                                     </td>
                                     <td>
-                                        <p:inputText value="#{profilebean.newId}"/>
+                                        <p:inputText value="#{profilebean.newId}"  />
                                     </td>
                                 </tr>
                                 <tr>
@@ -235,7 +235,7 @@
                                         First Name: 
                                     </td>
                                     <td>
-                                        <p:inputText value = "#{profilebean.newFirst}"/>
+                                        <p:inputText value = "#{profilebean.newFirst}"  />
                                     </td>
                                 </tr>
                                 <tr>
@@ -243,7 +243,7 @@
                                         Last Name:
                                     </td>
                                     <td>
-                                        <p:inputText value = "#{profilebean.newLast}"/>
+                                        <p:inputText value = "#{profilebean.newLast}" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -259,7 +259,7 @@
                                         Address: 
                                     </td>
                                     <td>
-                                        <p:inputText value = "#{profilebean.newAddress}"/>
+                                        <p:inputText value = "#{profilebean.newAddress}" />
                                     </td>
                                 </tr>
                                 <tr>
@@ -267,7 +267,7 @@
                                         State: 
                                     </td>
                                     <td>
-                                        <p:inputText value = "#{profilebean.newState}"/>
+                                        <p:inputText value = "#{profilebean.newState}"  />
                                     </td>
                                 </tr>
                                 <tr>
@@ -275,7 +275,7 @@
                                         Zip:
                                     </td>
                                     <td>
-                                        <p:inputText value = "#{profilebean.newZip}"/>
+                                        <p:inputText value = "#{profilebean.newZip}" />
                                     </td>
                                 </tr>
                                 <br/>
@@ -453,19 +453,26 @@
                              </p:dataTable>
                              
                        
-                        <p:dialog  header="Basic Dialog" widgetVar="dlg1" minHeight="40" style ="width: 50%" >
+                        <p:dialog  header="Attendance" widgetVar="dlg1" minHeight="40"  width="800" height="400"  >
                             
                             <p:dataTable id ="checkI" var="c" style="width:50%" value ="#{eBean.getEventUsers()}" >
-                                 <p:column headerText = "Name">
-                                  
+                                 <p:column headerText = "First Name">
+                                  <h:outputText value ="#{c.uFirst}"/>
+                                </p:column> 
+                                <p:column headerText = "Last Name">
+                                  <h:outputText value ="#{c.uLast}"/>
                                 </p:column> 
                                 <p:column headerText = "Attended Volunteers">
-                                     
+                                     <input type="checkbox" name="present" />
                                 </p:column> 
                             
                             </p:dataTable>
-                            
-                            
+                            <br/>
+                            <br/>
+                              <p:commandButton value = "Submit Attendance" onclick="PF('dlg1').hide();">
+                                             
+                                          
+                              </p:commandButton>
                             
                             
                             
@@ -620,12 +627,22 @@
 
                         <p:outputLabel for="eventdate" value="Select Event Date:" />
                         <p:calendar id="eventdate" value="#{event.eventdate}" />
+                        <p:outputLabel for="eventneed" value="Volunteer Need: " />
+                            <p:selectOneMenu id="eventneed" value="#{event.eventNeedStatus}" style="width:125px">
+                                <f:selectItem itemLabel="Select One" itemValue="" />
+                                <f:selectItem itemLabel="Low" itemValue="Low" />
+                                <f:selectItem itemLabel="Medium" itemValue="Medium" />
+                                <f:selectItem itemLabel="High" itemValue="High" />
+                            </p:selectOneMenu>
+
+         
                         
                         <p:outputLabel for="eventstart" value="Start Time:" />
                         <p:calendar id="eventstart" value="#{event.eventstart}" pattern="HH:mm" timeOnly="true"  />
                         
                         <p:outputLabel for="eventend" value="End Time:" />
                         <p:calendar id="eventend" value="#{event.eventend}" pattern="HH:mm" timeOnly="true"  />
+                        
                         
                         <h:outputLabel for="addr" value="Address: " /> 
                         <p:inputText id="addr" value="#{event.address}"/>
@@ -646,6 +663,7 @@
                         <p:inputText id="zip" value="#{event.zip}"/>
                         <p:message for="zip" />
                         <h:outputText value="" />
+                        
                         
                     </p:panelGrid>
                 </p:panel>                  
